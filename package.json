@@ -1,0 +1,32 @@
+{
+  "name": "stripe-cli",
+  "version": "1.0.0",
+  "description": "A CLI tool for making Stripe API calls",
+  "main": "index.js",
+  "bin": {
+    "stripe-cli": "./bin/stripe-cli.js"
+  },
+  "scripts": {
+    "start": "node bin/stripe-cli.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "stripe",
+    "cli",
+    "api",
+    "connect",
+    "accounts"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^11.1.0",
+    "stripe": "^14.7.0",
+    "chalk": "^4.1.2",
+    "table": "^6.8.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
+
