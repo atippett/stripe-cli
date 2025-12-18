@@ -2,13 +2,15 @@
 
 const { Command } = require('commander');
 const chalk = require('chalk');
-const { listAccounts } = require('../lib/commands/account');
+const { listAccounts, searchAccounts } = require('../lib/commands/account');
 const { 
   enableNetworkCostPassthrough, 
   disableNetworkCostPassthrough, 
   getNetworkCostPassthroughStatus,
   deleteNetworkCostPassthroughScheme 
 } = require('../lib/commands/account-settings');
+const { importCards } = require('../lib/commands/cards');
+const { generateTestAccounts } = require('../lib/commands/test-account');
 const ProfileManager = require('../lib/profile-manager');
 
 const program = new Command();
@@ -18,16 +20,12 @@ program
   .description('A CLI tool for making Stripe API calls')
   .version('1.0.0');
 
-// Account commands
-const accountCommand = program
-  .command('account')
-  .description('Manage Stripe Connect accounts');
-
-accountCommand
-  .command('list')
+// Account list command
+program
+  .command('account.list')
   .description('List the first 50 Connect accounts')
   .option('-k, --key <key>', 'Stripe secret key (or set STRIPE_SECRET_KEY env var)')
-  .option('-p, --profile <profile>', 'Use profile from .profile config file')
+  .option('-p, --platform <platform>', 'Use platform from .secrets config file')
   .option('-f, --format <format>', 'Output format (table, json)', 'table')
   .action(async (options) => {
     try {
@@ -38,24 +36,53 @@ accountCommand
     }
   });
 
-// Account settings commands
-const settingsCommand = accountCommand
-  .command('settings')
-  .description('Manage account settings');
+// Account search command
+program
+  .command('account.search <searchTerm>')
+  .description('Search Connect accounts using fuzzy matching (supports * wildcards)')
+  .option('-k, --key <key>', 'Stripe secret key (or set STRIPE_SECRET_KEY env var)')
+  .option('-p, --platform <platform>', 'Use platform from .secrets config file')
+  .option('-f, --format <format>', 'Output format (table, json)', 'table')
+  .action(async (searchTerm, options) => {
+    try {
+      options.searchTerm = searchTerm;
+      await searchAccounts(options);
+    } catch (error) {
+      console.error(chalk.red('Error:'), error.message);
+      process.exit(1);
+    }
+  });
 
-// Network cost passthrough commands
-const networkCostsCommand = settingsCommand
-  .command('network-costs')
-  .description('Manage network cost passthrough settings');
+// Account import card command
+program
+  .command('account.import.card')
+  .description('Import card data from CSV file to a Stripe connected account')
+  .option('-f, --file <file>', 'CSV file path (required)')
+  .option('-a, --account <account>', 'Platform account ID (required)')
+  .option('-ca, --connected-account <connected_account>', 'Connected account ID associated with platform account')
+  .option('-k, --key <key>', 'Stripe secret key (or set STRIPE_SECRET_KEY env var)')
+  .option('-p, --platform <platform>', 'Use platform from .secrets config file')
+  .option('--format <format>', 'Output format (table, json)', 'table')
+  .option('--dry-run', 'Validate CSV without creating cards')
+  .option('--verbose', 'Show detailed progress output')
+  .option('--delimiter <delimiter>', 'CSV delimiter (default: comma)', ',')
+  .option('-o, --output <output>', 'Output CSV file name (default: imported_cards_TIMESTAMP.csv)')
+  .action(async (options) => {
+    try {
+      await importCards(options);
+    } catch (error) {
+      console.error(chalk.red('Error:'), error.message);
+      process.exit(1);
+    }
+  });
 
-networkCostsCommand
-  .command('enable')
+// Network cost passthrough enable command
+program
+  .command('account.setting.network-cost.enable')
   .description('Enable network cost passthrough for a connected account')
   .option('-a, --account <account>', 'Connected account ID (required)')
   .option('-k, --key <key>', 'Stripe secret key (or set STRIPE_SECRET_KEY env var)')
-  .option('-p, --profile <profile>', 'Use profile from .profile config file')
-  .option('-f, --format <format>', 'Output format (table, json)', 'table')
-  .option('--starts-at <timestamp>', 'Unix timestamp for future activation (optional)')
+  .option('-p, --platform <platform>', 'Use platform from .secrets config file')
   .action(async (options) => {
     try {
       await enableNetworkCostPassthrough(options);
@@ -65,14 +92,13 @@ networkCostsCommand
     }
   });
 
-networkCostsCommand
-  .command('disable')
+// Network cost passthrough disable command
+program
+  .command('account.setting.network-cost.disable')
   .description('Disable network cost passthrough for a connected account')
   .option('-a, --account <account>', 'Connected account ID (required)')
   .option('-k, --key <key>', 'Stripe secret key (or set STRIPE_SECRET_KEY env var)')
-  .option('-p, --profile <profile>', 'Use profile from .profile config file')
-  .option('-f, --format <format>', 'Output format (table, json)', 'table')
-  .option('--starts-at <timestamp>', 'Unix timestamp for future activation (optional)')
+  .option('-p, --platform <platform>', 'Use platform from .secrets config file')
   .action(async (options) => {
     try {
       await disableNetworkCostPassthrough(options);
@@ -82,13 +108,13 @@ networkCostsCommand
     }
   });
 
-networkCostsCommand
-  .command('status')
+// Network cost passthrough status command
+program
+  .command('account.setting.network-cost.status')
   .description('Get network cost passthrough status for a connected account')
   .option('-a, --account <account>', 'Connected account ID (required)')
   .option('-k, --key <key>', 'Stripe secret key (or set STRIPE_SECRET_KEY env var)')
-  .option('-p, --profile <profile>', 'Use profile from .profile config file')
-  .option('-f, --format <format>', 'Output format (table, json)', 'table')
+  .option('-p, --platform <platform>', 'Use platform from .secrets config file')
   .action(async (options) => {
     try {
       await getNetworkCostPassthroughStatus(options);
@@ -98,14 +124,14 @@ networkCostsCommand
     }
   });
 
-networkCostsCommand
-  .command('delete-scheme')
+// Network cost passthrough delete scheme command
+program
+  .command('account.setting.network-cost.delete-scheme')
   .description('Delete a scheduled network cost passthrough scheme')
   .option('-a, --account <account>', 'Connected account ID (required)')
+  .option('--scheme-id <scheme_id>', 'Scheme ID to delete (required)')
   .option('-k, --key <key>', 'Stripe secret key (or set STRIPE_SECRET_KEY env var)')
-  .option('-p, --profile <profile>', 'Use profile from .profile config file')
-  .option('-f, --format <format>', 'Output format (table, json)', 'table')
-  .option('--scheme-id <schemeId>', 'Scheme ID to delete (required)')
+  .option('-p, --platform <platform>', 'Use platform from .secrets config file')
   .action(async (options) => {
     try {
       await deleteNetworkCostPassthroughScheme(options);
@@ -115,19 +141,57 @@ networkCostsCommand
     }
   });
 
-// Profile management commands
-const profileCommand = program
-  .command('profile')
-  .description('Manage Stripe API key profiles');
-
-profileCommand
-  .command('list')
-  .description('List all configured profiles')
-  .action(() => {
+// Test account generate command
+program
+  .command('test.account.generate')
+  .description('Generate test connected accounts for all configured countries with card_payments and transfers capabilities and all KYC/KYB requirements filled in')
+  .option('-k, --key <key>', 'Stripe secret key (or set STRIPE_SECRET_KEY env var)')
+  .option('-p, --platform <platform>', 'Use platform from .secrets config file')
+  .option('-f, --format <format>', 'Output format (table, json)', 'table')
+  .option('-t, --test', 'Use test environment keys from profile')
+  .option('-e, --environment <environment>', 'Environment to use (test or prod)', 'prod')
+  .action(async (options) => {
     try {
-      const profileManager = new ProfileManager();
-      profileManager.loadProfiles();
-      profileManager.listProfiles();
+      await generateTestAccounts(options);
+    } catch (error) {
+      console.error(chalk.red('Error:'), error.message);
+      process.exit(1);
+    }
+  });
+
+// Config platform list command
+program
+  .command('config.platform.list')
+  .description('List all configured platforms and their settings')
+  .action(async () => {
+    try {
+      const { getAvailablePlatforms, getDefaultProfile, getTestProfile, getPlatformConfig } = require('../lib/config-loader');
+      
+      const platforms = getAvailablePlatforms();
+      const defaultPlatform = getDefaultProfile();
+      const testPlatform = getTestProfile();
+      
+      console.log('Available Platforms:');
+      console.log('');
+      
+      if (defaultPlatform) {
+        console.log(`Default Platform: ${defaultPlatform}`);
+      }
+      
+      if (testPlatform) {
+        console.log(`Test Platform: ${testPlatform}`);
+      }
+      
+      console.log('');
+      
+      platforms.forEach(platformName => {
+        const platformConfig = getPlatformConfig(platformName);
+        console.log(`[${platformName}]`);
+        console.log(`  Account: ${platformConfig.account || 'Not configured'}`);
+        console.log(`  Production Connected Account: ${platformConfig.prod_connected_account || 'Not configured'}`);
+        console.log(`  Test Connected Account: ${platformConfig.test_connected_account || 'Not configured'}`);
+        console.log('');
+      });
     } catch (error) {
       console.error(chalk.red('Error:'), error.message);
       process.exit(1);
@@ -135,4 +199,3 @@ profileCommand
   });
 
 program.parse();
-

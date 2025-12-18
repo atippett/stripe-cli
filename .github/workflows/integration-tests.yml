@@ -1,0 +1,43 @@
+name: Integration Tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      stripe_test_key:
+        description: 'Stripe Test Key (sk_test_...)'
+        required: true
+        type: string
+  schedule:
+    # Run integration tests daily at 2 AM UTC
+    - cron: '0 2 * * *'
+
+jobs:
+  integration-tests:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18.x'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run integration tests
+      env:
+        STRIPE_TEST_KEY: ${{ github.event.inputs.stripe_test_key || secrets.STRIPE_TEST_KEY }}
+      run: npm run test:integration:ci
+
+    - name: Upload test results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: integration-test-results
+        path: |
+          coverage/
+          test-results/

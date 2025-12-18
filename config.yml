@@ -1,0 +1,47 @@
+# Stripe CLI Configuration
+# Commands and their key requirements
+# key: "secret" (sk_*) or "restricted" (rk_*)
+# Default for unlisted commands: "restricted"
+
+# Global settings
+global:
+  default_platform: "vet"
+  test_platform: "vet"
+
+# Platform configurations
+platform:
+  vet:
+    account: "acct_18yYltEdgy9m3MPr"
+    prod_connected_account: "acct_1MzSRtROT734hn6m"
+    test_connected_account: "acct_1Rw31tRLzvnMBwNL" 
+  daysmart:
+    account: "acct_1LLF4ZFUW1wgLnXK"
+    prod_connected_account: "acct_1Mj22d2V2NLzChjM"
+    test_connected_account: ""
+  ttp:
+    account: "acct_1EN24zFPddEoAyG1"
+    #prod_connected_account: "acct_1Mj22d2V2NLzChjM"
+    #test_connected_account: "acct_1Mj22d2V2NLzChjM"
+
+commands:
+  "account.setting.network-cost.enable":
+    key: "secret"
+    test_env: prod
+  "account.setting.network-cost.disable":
+    key: "secret"
+    test_env: prod
+  "account.setting.network-cost.status":
+    key: "secret"
+    test_env: prod
+  "account.setting.network-cost.delete-scheme":
+    key: "secret"
+    test_env: prod
+  "account.search":
+    key: "restricted"
+  "test.account.generate":
+    key: "secret"
+  # Add more commands here as needed
+  # "account.list":
+  #   key: "restricted"
+  # "account.import.card":
+  #   key: "restricted"

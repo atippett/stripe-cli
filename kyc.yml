@@ -1,0 +1,1132 @@
+au:
+  country: AU
+  currency: aud
+  business_type: individual
+  individual:
+    first_name: James
+    last_name: Wilson
+    phone: '0000000000'
+    dob:
+      day: 1
+      month: 1
+      year: 1902
+    address:
+      line1: address_full_match
+      city: Sydney
+      state: NSW
+      postal_code: '2000'
+      country: AU
+  business_profile:
+    name: Test Australian Individual
+    product_description: Test account for Stripe CLI
+    support_phone: '0000000000'
+    mcc: '5734'
+  external_account:
+    object: bank_account
+    country: AU
+    currency: aud
+    account_number: '000123456'
+    routing_number: '110000'
+at:
+  country: AT
+  currency: eur
+  business_type: individual
+  individual:
+    first_name: Hans
+    last_name: Mueller
+    phone: '0000000000'
+    dob:
+      day: 1
+      month: 1
+      year: 1902
+    address:
+      line1: address_full_match
+      city: Vienna
+      postal_code: '1010'
+      country: AT
+  business_profile:
+    name: Test Austrian Individual
+    product_description: Test account for Stripe CLI
+    support_phone: '0000000000'
+    mcc: '5734'
+  external_account:
+    object: bank_account
+    country: AT
+    currency: eur
+    account_number: AT611904300234573201
+be:
+  country: BE
+  currency: eur
+  business_type: individual
+  individual:
+    first_name: Jean
+    last_name: Dupont
+    phone: '0000000000'
+    dob:
+      day: 1
+      month: 1
+      year: 1902
+    address:
+      line1: address_full_match
+      city: Brussels
+      postal_code: '1000'
+      country: BE
+  business_profile:
+    name: Test Belgian Individual
+    product_description: Test account for Stripe CLI
+    support_phone: '0000000000'
+    mcc: '5734'
+  external_account:
+    object: bank_account
+    country: BE
+    currency: eur
+    account_number: BE68539007547034
+bg:
+  country: BG
+  currency: bgn
+  business_type: individual
+  individual:
+    first_name: Ivan
+    last_name: Petrov
+    phone: '0000000000'
+    dob:
+      day: 1
+      month: 1
+      year: 1902
+    address:
+      line1: address_full_match
+      city: Sofia
+      postal_code: '1000'
+      country: BG
+  business_profile:
+    name: Test Bulgarian Individual
+    product_description: Test account for Stripe CLI
+    support_phone: '0000000000'
+    mcc: '5734'
+  external_account:
+    object: bank_account
+    country: BG
+    currency: bgn
+    account_number: BG80BNBG96611020345678
+ca:
+  country: CA
+  currency: cad
+  business_type: individual
+  individual:
+    first_name: Jean
+    last_name: Dupont
+    phone: '0000000000'
+    dob:
+      day: 1
+      month: 1
+      year: 1902
+    address:
+      line1: address_full_match
+      city: Toronto
+      state: 'ON'
+      postal_code: M5H 2N2
+      country: CA
+    relationship:
+      title: 'Owner'
+  business_profile:
+    name: Test Canadian Individual
+    product_description: Test account for Stripe CLI
+    support_phone: '0000000000'
+    mcc: '5734'
+    url: 'https://accessible.stripe.com'
+  external_account:
+    object: bank_account
+    country: CA
+    currency: cad
+    account_number: '000123456789'
+    routing_number: 11000-000
+hr:
+  country: HR
+  currency: eur
+  business_type: individual
+  individual:
+    first_name: Ivan
+    last_name: Horvat
+    phone: '0000000000'
+    dob:
+      day: 1
+      month: 1
+      year: 1902
+    address:
+      line1: address_full_match
+      city: Zagreb
+      postal_code: '10000'
+      country: HR
+  business_profile:
+    name: Test Croatian Individual
+    product_description: Test account for Stripe CLI
+    support_phone: '0000000000'
+    mcc: '5734'
+  external_account:
+    object: bank_account
+    country: HR
+    currency: eur
+    account_number: 'HR7624020064583467589'
+cy:
+  country: CY
+  currency: eur
+  business_type: individual
+  individual:
+    first_name: Andreas
+    last_name: Papadopoulos
+    phone: '0000000000'
+    dob:
+      day: 1
+      month: 1
+      year: 1902
+    address:
+      line1: address_full_match
+      city: Nicosia
+      postal_code: '1065'
+      country: CY
+  business_profile:
+    name: Test Cypriot Individual
+    product_description: Test account for Stripe CLI
+    support_phone: '0000000000'
+    mcc: '5734'
+  external_account:
+    object: bank_account
+    country: CY
+    currency: eur
+    account_number: CY17002001280000001200527600
+cz:
+  country: CZ
+  currency: czk
+  business_type: individual
+  individual:
+    first_name: Jan
+    last_name: Novak
+    phone: '0000000000'
+    dob:
+      day: 1
+      month: 1
+      year: 1902
+    address:
+      line1: address_full_match
+      city: Prague
+      postal_code: '11000'
+      country: CZ
+  business_profile:
+    name: Test Czech Individual
+    product_description: Test account for Stripe CLI
+    support_phone: '0000000000'
+    mcc: '5734'
+  external_account:
+    object: bank_account
+    country: CZ
+    currency: czk
+    account_number: CZ6508000000192000145399
+dk:
+  country: DK
+  currency: dkk
+  business_type: individual
+  individual:
+    first_name: Lars
+    last_name: Hansen
+    phone: '0000000000'
+    dob:
+      day: 1
+      month: 1
+      year: 1902
+    address:
+      line1: address_full_match
+      city: Copenhagen
+      postal_code: '1050'
+      country: DK
+  business_profile:
+    name: Test Danish Individual
+    product_description: Test account for Stripe CLI
+    support_phone: '0000000000'
+    mcc: '5734'
+  external_account:
+    object: bank_account
+    country: DK
+    currency: dkk
+    account_number: DK5000400440116243
+ee:
+  country: EE
+  currency: eur
+  business_type: individual
+  individual:
+    first_name: Jaan
+    last_name: Tamm
+    phone: '0000000000'
+    dob:
+      day: 1
+      month: 1
+      year: 1902
+    address:
+      line1: address_full_match
+      city: Tallinn
+      postal_code: '10111'
+      country: EE
+  business_profile:
+    name: Test Estonian Individual
+    product_description: Test account for Stripe CLI
+    support_phone: '0000000000'
+    mcc: '5734'
+  external_account:
+    object: bank_account
+    country: EE
+    currency: eur
+    account_number: EE382200221020145685
+fi:
+  country: FI
+  currency: eur
+  business_type: individual
+  individual:
+    first_name: Matti
+    last_name: Virtanen
+    phone: '0000000000'
+    dob:
+      day: 1
+      month: 1
+      year: 1902
+    address:
+      line1: address_full_match
+      city: Helsinki
+      postal_code: '00100'
+      country: FI
+  business_profile:
+    name: Test Finnish Individual
+    product_description: Test account for Stripe CLI
+    support_phone: '0000000000'
+    mcc: '5734'
+  external_account:
+    object: bank_account
+    country: FI
+    currency: eur
+    account_number: FI2112345600000785
+fr:
+  country: FR
+  currency: eur
+  business_type: individual
+  individual:
+    first_name: Pierre
+    last_name: Martin
+    phone: '0000000000'
+    dob:
+      day: 1
+      month: 1
+      year: 1902
+    address:
+      line1: address_full_match
+      city: Paris
+      postal_code: '75001'
+      country: FR
+  business_profile:
+    name: Test French Individual
+    product_description: Test account for Stripe CLI
+    support_phone: '0000000000'
+    mcc: '5734'
+  external_account:
+    object: bank_account
+    country: FR
+    currency: eur
+    account_number: FR1420041010050500013M02606
+de:
+  country: DE
+  currency: eur
+  business_type: individual
+  individual:
+    first_name: Hans
+    last_name: Schmidt
+    phone: '0000000000'
+    dob:
+      day: 1
+      month: 1
+      year: 1902
+    address:
+      line1: address_full_match
+      city: Berlin
+      postal_code: '10115'
+      country: DE
+  business_profile:
+    name: Test German Individual
+    product_description: Test account for Stripe CLI
+    support_phone: '0000000000'
+    mcc: '5734'
+  external_account:
+    object: bank_account
+    country: DE
+    currency: eur
+    account_number: DE89370400440532013000
+gi:
+  country: GI
+  currency: gbp
+  business_type: individual
+  individual:
+    first_name: John
+    last_name: Smith
+    phone: '0000000000'
+    dob:
+      day: 1
+      month: 1
+      year: 1902
+    address:
+      line1: address_full_match
+      city: Gibraltar
+      postal_code: GX11 1AA
+      country: GI
+  business_profile:
+    name: Test Gibraltar Individual
+    product_description: Test account for Stripe CLI
+    support_phone: '0000000000'
+    mcc: '5734'
+  external_account:
+    object: bank_account
+    country: GI
+    currency: gbp
+    account_number: '00012345'
+    routing_number: '110000'
+gr:
+  country: GR
+  currency: eur
+  business_type: individual
+  individual:
+    first_name: Dimitris
+    last_name: Papadopoulos
+    phone: '0000000000'
+    dob:
+      day: 1
+      month: 1
+      year: 1902
+    address:
+      line1: address_full_match
+      city: Athens
+      postal_code: '10431'
+      country: GR
+  business_profile:
+    name: Test Greek Individual
+    product_description: Test account for Stripe CLI
+    support_phone: '0000000000'
+    mcc: '5734'
+  external_account:
+    object: bank_account
+    country: GR
+    currency: eur
+    account_number: GR1601101250000000012300695
+hk:
+  country: HK
+  currency: hkd
+  business_type: individual
+  individual:
+    first_name: Wei
+    last_name: Chen
+    phone: '0000000000'
+    dob:
+      day: 1
+      month: 1
+      year: 1902
+    address:
+      line1: address_full_match
+      city: Hong Kong
+      postal_code: '000000'
+      country: HK
+    id_number: '000000000'
+  business_profile:
+    name: Test Hong Kong Individual
+    product_description: Test account for Stripe CLI
+    support_phone: '0000000000'
+    mcc: '5734'
+  external_account:
+    object: bank_account
+    country: HK
+    currency: hkd
+    account_number: '000123456'
+    routing_number: 004-123
+hu:
+  country: HU
+  currency: huf
+  business_type: individual
+  individual:
+    first_name: Laszlo
+    last_name: Nagy
+    phone: '0000000000'
+    dob:
+      day: 1
+      month: 1
+      year: 1902
+    address:
+      line1: address_full_match
+      city: Budapest
+      postal_code: '1011'
+      country: HU
+  business_profile:
+    name: Test Hungarian Individual
+    product_description: Test account for Stripe CLI
+    support_phone: '0000000000'
+    mcc: '5734'
+  external_account:
+    object: bank_account
+    country: HU
+    currency: huf
+    account_number: HU42117730161111101800000000
+ie:
+  country: IE
+  currency: eur
+  business_type: individual
+  individual:
+    first_name: Sean
+    last_name: O'Brien
+    phone: '0000000000'
+    dob:
+      day: 1
+      month: 1
+      year: 1902
+    address:
+      line1: address_full_match
+      city: Dublin
+      state: 'Dublin'
+      postal_code: D02 AF30
+      country: IE
+  business_profile:
+    name: Test Irish Individual
+    product_description: Test account for Stripe CLI
+    support_phone: '0000000000'
+    mcc: '5734'
+  external_account:
+    object: bank_account
+    country: IE
+    currency: eur
+    account_number: IE29AIBK93115212345678
+it:
+  country: IT
+  currency: eur
+  business_type: individual
+  individual:
+    first_name: Marco
+    last_name: Rossi
+    phone: '0000000000'
+    dob:
+      day: 1
+      month: 1
+      year: 1902
+    address:
+      line1: address_full_match
+      city: Rome
+      postal_code: 00118
+      country: IT
+  business_profile:
+    name: Test Italian Individual
+    product_description: Test account for Stripe CLI
+    support_phone: '0000000000'
+    mcc: '5734'
+  external_account:
+    object: bank_account
+    country: IT
+    currency: eur
+    account_number: IT60X0542811101000000123456
+lv:
+  country: LV
+  currency: eur
+  business_type: individual
+  individual:
+    first_name: Janis
+    last_name: Berzins
+    phone: '0000000000'
+    dob:
+      day: 1
+      month: 1
+      year: 1902
+    address:
+      line1: address_full_match
+      city: Riga
+      postal_code: LV-1010
+      country: LV
+  business_profile:
+    name: Test Latvian Individual
+    product_description: Test account for Stripe CLI
+    support_phone: '0000000000'
+    mcc: '5734'
+  external_account:
+    object: bank_account
+    country: LV
+    currency: eur
+    account_number: LV80BANK0000435195001
+li:
+  country: LI
+  currency: chf
+  business_type: individual
+  individual:
+    first_name: Hans
+    last_name: Mueller
+    phone: '0000000000'
+    dob:
+      day: 1
+      month: 1
+      year: 1902
+    address:
+      line1: address_full_match
+      city: Vaduz
+      postal_code: '9490'
+      country: LI
+  business_profile:
+    name: Test Liechtenstein Individual
+    product_description: Test account for Stripe CLI
+    support_phone: '0000000000'
+    mcc: '5734'
+  external_account:
+    object: bank_account
+    country: LI
+    currency: chf
+    account_number: 'LI0508800636123378777'
+lt:
+  country: LT
+  currency: eur
+  business_type: individual
+  individual:
+    first_name: Jonas
+    last_name: Kazlauskas
+    phone: '0000000000'
+    dob:
+      day: 1
+      month: 1
+      year: 1902
+    address:
+      line1: address_full_match
+      city: Vilnius
+      postal_code: '01103'
+      country: LT
+  business_profile:
+    name: Test Lithuanian Individual
+    product_description: Test account for Stripe CLI
+    support_phone: '0000000000'
+    mcc: '5734'
+  external_account:
+    object: bank_account
+    country: LT
+    currency: eur
+    account_number: LT121000011101001000
+lu:
+  country: LU
+  currency: eur
+  business_type: individual
+  individual:
+    first_name: Jean
+    last_name: Muller
+    phone: '0000000000'
+    dob:
+      day: 1
+      month: 1
+      year: 1902
+    address:
+      line1: address_full_match
+      city: Luxembourg
+      postal_code: '1012'
+      country: LU
+  business_profile:
+    name: Test Luxembourg Individual
+    product_description: Test account for Stripe CLI
+    support_phone: '0000000000'
+    mcc: '5734'
+  external_account:
+    object: bank_account
+    country: LU
+    currency: eur
+    account_number: LU280019400644750000
+mt:
+  country: MT
+  currency: eur
+  business_type: individual
+  individual:
+    first_name: Joseph
+    last_name: Borg
+    phone: '0000000000'
+    dob:
+      day: 1
+      month: 1
+      year: 1902
+    address:
+      line1: address_full_match
+      city: Valletta
+      postal_code: VLT 1010
+      country: MT
+  business_profile:
+    name: Test Maltese Individual
+    product_description: Test account for Stripe CLI
+    support_phone: '0000000000'
+    mcc: '5734'
+  external_account:
+    object: bank_account
+    country: MT
+    currency: eur
+    account_number: MT84MALT011000012345MTLCAST001S
+mx:
+  country: MX
+  currency: mxn
+  business_type: individual
+  individual:
+    first_name: Carlos
+    last_name: Rodriguez
+    phone: '0000000000'
+    dob:
+      day: 1
+      month: 1
+      year: 1902
+    address:
+      line1: address_full_match
+      city: Mexico City
+      state: CDMX
+      postal_code: '01000'
+      country: MX
+    id_number: '000000000'
+  business_profile:
+    name: Test Mexican Individual
+    product_description: Test account for Stripe CLI
+    support_phone: '0000000000'
+    mcc: '5734'
+  external_account:
+    object: bank_account
+    country: MX
+    currency: mxn
+    account_number: '000000001234567897'
+nl:
+  country: NL
+  currency: eur
+  business_type: individual
+  individual:
+    first_name: Jan
+    last_name: de Vries
+    phone: '0000000000'
+    dob:
+      day: 1
+      month: 1
+      year: 1902
+    address:
+      line1: address_full_match
+      city: Amsterdam
+      postal_code: 1012 AB
+      country: NL
+  business_profile:
+    name: Test Dutch Individual
+    product_description: Test account for Stripe CLI
+    support_phone: '0000000000'
+    mcc: '5734'
+  external_account:
+    object: bank_account
+    country: NL
+    currency: eur
+    account_number: NL91ABNA0417164300
+nz:
+  country: NZ
+  currency: nzd
+  business_type: individual
+  individual:
+    first_name: James
+    last_name: Wilson
+    phone: '0000000000'
+    dob:
+      day: 1
+      month: 1
+      year: 1902
+    address:
+      line1: address_full_match
+      city: Auckland
+      postal_code: '1010'
+      country: NZ
+  business_profile:
+    name: Test New Zealand Individual
+    product_description: Test account for Stripe CLI
+    support_phone: '0000000000'
+    mcc: '5734'
+  external_account:
+    object: bank_account
+    country: NZ
+    currency: nzd
+    account_number: '1100000000000010'
+    routing_number: '010001'
+'no':
+  country: 'NO'
+  currency: nok
+  business_type: individual
+  individual:
+    first_name: Olav
+    last_name: Hansen
+    phone: '0000000000'
+    dob:
+      day: 1
+      month: 1
+      year: 1902
+    address:
+      line1: address_full_match
+      city: Oslo
+      postal_code: '0150'
+      country: 'NO'
+  business_profile:
+    name: Test Norwegian Individual
+    product_description: Test account for Stripe CLI
+    support_phone: '0000000000'
+    mcc: '5734'
+  external_account:
+    object: bank_account
+    country: 'NO'
+    currency: nok
+    account_number: NO9386011117947
+pl:
+  country: PL
+  currency: pln
+  business_type: individual
+  individual:
+    first_name: Jan
+    last_name: Kowalski
+    phone: '0000000000'
+    dob:
+      day: 1
+      month: 1
+      year: 1902
+    address:
+      line1: address_full_match
+      city: Warsaw
+      postal_code: 00-001
+      country: PL
+  business_profile:
+    name: Test Polish Individual
+    product_description: Test account for Stripe CLI
+    support_phone: '0000000000'
+    mcc: '5734'
+  external_account:
+    object: bank_account
+    country: PL
+    currency: pln
+    account_number: PL61109010140000071219812874
+pt:
+  country: PT
+  currency: eur
+  business_type: individual
+  individual:
+    first_name: Joao
+    last_name: Silva
+    phone: '0000000000'
+    dob:
+      day: 1
+      month: 1
+      year: 1902
+    address:
+      line1: address_full_match
+      city: Lisbon
+      postal_code: 1000-001
+      country: PT
+  business_profile:
+    name: Test Portuguese Individual
+    product_description: Test account for Stripe CLI
+    support_phone: '0000000000'
+    mcc: '5734'
+  external_account:
+    object: bank_account
+    country: PT
+    currency: eur
+    account_number: PT50000201231234567890154
+ro:
+  country: RO
+  currency: ron
+  business_type: individual
+  individual:
+    first_name: Ion
+    last_name: Popescu
+    phone: '0000000000'
+    dob:
+      day: 1
+      month: 1
+      year: 1902
+    address:
+      line1: address_full_match
+      city: Bucharest
+      postal_code: '010001'
+      country: RO
+  business_profile:
+    name: Test Romanian Individual
+    product_description: Test account for Stripe CLI
+    support_phone: '0000000000'
+    mcc: '5734'
+  external_account:
+    object: bank_account
+    country: RO
+    currency: ron
+    account_number: RO49AAAA1B31007593840000
+sg:
+  country: SG
+  currency: sgd
+  business_type: individual
+  individual:
+    first_name: Wei
+    last_name: Tan
+    phone: '0000000000'
+    dob:
+      day: 1
+      month: 1
+      year: 1902
+    address:
+      line1: address_full_match
+      city: Singapore
+      postal_code: 018956
+      country: SG
+    id_number: '000000000'
+    nationality: 'SG'
+    full_name_aliases: []
+  business_profile:
+    name: Test Singapore Individual
+    product_description: Test account for Stripe CLI
+    support_phone: '0000000000'
+    mcc: '5734'
+  external_account:
+    object: bank_account
+    country: SG
+    currency: sgd
+    account_number: '000123456'
+    routing_number: 1100-000
+sk:
+  country: SK
+  currency: eur
+  business_type: individual
+  individual:
+    first_name: Jozef
+    last_name: Novak
+    phone: '0000000000'
+    dob:
+      day: 1
+      month: 1
+      year: 1902
+    address:
+      line1: address_full_match
+      city: Bratislava
+      postal_code: '81101'
+      country: SK
+  business_profile:
+    name: Test Slovak Individual
+    product_description: Test account for Stripe CLI
+    support_phone: '0000000000'
+    mcc: '5734'
+  external_account:
+    object: bank_account
+    country: SK
+    currency: eur
+    account_number: SK3112000000198742637541
+si:
+  country: SI
+  currency: eur
+  business_type: individual
+  individual:
+    first_name: Janez
+    last_name: Novak
+    phone: '0000000000'
+    dob:
+      day: 1
+      month: 1
+      year: 1902
+    address:
+      line1: address_full_match
+      city: Ljubljana
+      postal_code: '1000'
+      country: SI
+  business_profile:
+    name: Test Slovenian Individual
+    product_description: Test account for Stripe CLI
+    support_phone: '0000000000'
+    mcc: '5734'
+  external_account:
+    object: bank_account
+    country: SI
+    currency: eur
+    account_number: 'SI56263300012039086'
+es:
+  country: ES
+  currency: eur
+  business_type: individual
+  individual:
+    first_name: Carlos
+    last_name: Garcia
+    phone: '0000000000'
+    dob:
+      day: 1
+      month: 1
+      year: 1902
+    address:
+      line1: address_full_match
+      city: Madrid
+      postal_code: '28001'
+      country: ES
+  business_profile:
+    name: Test Spanish Individual
+    product_description: Test account for Stripe CLI
+    support_phone: '0000000000'
+    mcc: '5734'
+  external_account:
+    object: bank_account
+    country: ES
+    currency: eur
+    account_number: ES9121000418450200051332
+se:
+  country: SE
+  currency: sek
+  business_type: individual
+  individual:
+    first_name: Erik
+    last_name: Andersson
+    phone: '0000000000'
+    dob:
+      day: 1
+      month: 1
+      year: 1902
+    address:
+      line1: address_full_match
+      city: Stockholm
+      postal_code: '11122'
+      country: SE
+  business_profile:
+    name: Test Swedish Individual
+    product_description: Test account for Stripe CLI
+    support_phone: '0000000000'
+    mcc: '5734'
+  external_account:
+    object: bank_account
+    country: SE
+    currency: sek
+    account_number: 'SE3550000000054910000003'
+ch:
+  country: CH
+  currency: chf
+  business_type: individual
+  individual:
+    first_name: Hans
+    last_name: Mueller
+    phone: '0000000000'
+    dob:
+      day: 1
+      month: 1
+      year: 1902
+    address:
+      line1: address_full_match
+      city: Zurich
+      postal_code: '8001'
+      country: CH
+  business_profile:
+    name: Test Swiss Individual
+    product_description: Test account for Stripe CLI
+    support_phone: '0000000000'
+    mcc: '5734'
+  external_account:
+    object: bank_account
+    country: CH
+    currency: chf
+    account_number: CH9300762011623852957
+th:
+  country: TH
+  currency: thb
+  business_type: individual
+  individual:
+    first_name: Somchai
+    last_name: Srisawat
+    phone: '0000000000'
+    dob:
+      day: 1
+      month: 1
+      year: 1902
+    address:
+      line1: address_full_match
+      city: Bangkok
+      postal_code: '10100'
+      country: TH
+  business_profile:
+    name: Test Thai Individual
+    product_description: Test account for Stripe CLI
+    support_phone: '0000000000'
+    mcc: '5734'
+  external_account:
+    object: bank_account
+    country: TH
+    currency: thb
+    account_number: '000123456'
+    routing_number: '001-0001'
+ae:
+  country: AE
+  currency: aed
+  business_type: company
+  company:
+    name: 'Test UAE Company Ltd.'
+    tax_id: '000000000'
+    address:
+      line1: 'address_full_match'
+      city: 'Dubai'
+      postal_code: '00000'
+      country: 'AE'
+    phone: '0000000000'
+  business_profile:
+    name: 'Test UAE Company'
+    product_description: 'Test account for Stripe CLI'
+    support_phone: '0000000000'
+    mcc: '5734'
+  external_account:
+    object: bank_account
+    country: AE
+    currency: aed
+    account_number: 'AE070331234567890123456'
+gb:
+  country: GB
+  currency: gbp
+  business_type: individual
+  individual:
+    first_name: James
+    last_name: Smith
+    phone: '0000000000'
+    dob:
+      day: 1
+      month: 1
+      year: 1902
+    address:
+      line1: address_full_match
+      city: London
+      postal_code: SW1A 1AA
+      country: GB
+  business_profile:
+    name: Test UK Individual
+    product_description: Test account for Stripe CLI
+    support_phone: '0000000000'
+    mcc: '5734'
+  external_account:
+    object: bank_account
+    country: GB
+    currency: gbp
+    account_number: '00012345'
+    routing_number: '108800'
+us:
+  country: US
+  currency: usd
+  business_type: individual
+  individual:
+    first_name: John
+    last_name: Smith
+    phone: '0000000000'
+    dob:
+      day: 1
+      month: 1
+      year: 1902
+    address:
+      line1: address_full_match
+      city: San Francisco
+      state: CA
+      postal_code: '94102'
+      country: US
+    ssn_last_4: '0000'
+  business_profile:
+    name: Test US Individual
+    product_description: Test account for Stripe CLI
+    support_phone: '0000000000'
+    mcc: '5734'
+  external_account:
+    object: bank_account
+    country: US
+    currency: usd
+    account_number: 000123456789
+    routing_number: '110000000'
+common:
+  type: express
+  requested_capabilities:
+    - card_payments
+    - transfers
+  # Note: tos_acceptance is not included for Express accounts - Stripe handles it through onboarding

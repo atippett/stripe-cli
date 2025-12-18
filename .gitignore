@@ -1,3 +1,6 @@
+#sensitive
+.secrets
+
 # Dependencies
 node_modules/
 npm-debug.log*
@@ -71,4 +74,10 @@ Thumbs.db
 # Logs
 logs
 *.log
+
+# Temporary files and test outputs
+tmp/*
+!tmp/README.md
+*.csv
+imported_cards_*.csv
 
