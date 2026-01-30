@@ -18,7 +18,7 @@ A command-line tool for making Stripe API calls, starting with Connect account m
    ```
 3. Make the CLI executable:
    ```bash
-   chmod +x bin/stripe-cli.js
+   chmod +x bin/stripe-cli
    ```
 
 ## Configuration
@@ -408,7 +408,7 @@ The tool provides clear error messages for common issues:
 ```
 stripe-cli/
 ├── bin/
-│   └── stripe-cli.js          # Main CLI entry point
+│   └── stripe-cli          # Main CLI entry point
 ├── lib/
 │   ├── commands/
 │   │   └── account.js         # Account-related commands
@@ -422,7 +422,7 @@ stripe-cli/
 To add new commands:
 
 1. Create a new command file in `lib/commands/`
-2. Import and register the command in `bin/stripe-cli.js`
+2. Import and register the command in `bin/stripe-cli`
 3. Follow the existing pattern for error handling and output formatting
 
 ## Requirements

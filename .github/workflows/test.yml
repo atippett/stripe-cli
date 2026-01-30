@@ -89,13 +89,13 @@ jobs:
       run: npm run build --if-present
 
     - name: Test CLI help
-      run: node bin/stripe-cli.js --help
+      run: node bin/stripe-cli --help
 
     - name: Test account help
-      run: node bin/stripe-cli.js account --help
+      run: node bin/stripe-cli account --help
 
     - name: Test cards help
-      run: node bin/stripe-cli.js cards --help
+      run: node bin/stripe-cli cards --help
 
     - name: Test profile help
-      run: node bin/stripe-cli.js profile --help
+      run: node bin/stripe-cli profile --help

@@ -9,15 +9,15 @@ This is a Node.js CLI tool built with Commander.js that provides a command-line 
 ## Setup Commands
 
 - Install dependencies: `npm install`
-- Make CLI executable: `chmod +x bin/stripe-cli.js`
-- Test CLI help: `node bin/stripe-cli.js --help`
+- Make CLI executable: `chmod +x bin/stripe-cli`
+- Test CLI help: `node bin/stripe-cli --help`
 
 ## Development Environment
 
 - Node.js 14.0.0 or higher required
 - Uses npm for package management
 - No build step required - direct Node.js execution
-- CLI entry point: `bin/stripe-cli.js`
+- CLI entry point: `bin/stripe-cli`
 
 ## Code Style
 
@@ -33,7 +33,7 @@ This is a Node.js CLI tool built with Commander.js that provides a command-line 
 ```
 stripe-cli/
 ├── bin/
-│   └── stripe-cli.js          # Main CLI entry point
+│   └── stripe-cli          # Main CLI entry point
 ├── lib/
 │   ├── commands/
 │   │   └── account.js         # Account-related commands
@@ -45,12 +45,12 @@ stripe-cli/
 
 ## Testing Instructions
 
-- Test CLI help: `node bin/stripe-cli.js --help`
-- Test account list help: `node bin/stripe-cli.js account list --help`
-- Test with invalid key: `node bin/stripe-cli.js account list --key invalid_key`
-- Test with valid key: `node bin/stripe-cli.js account list --key rk_test_...`
-- Test account settings: `node bin/stripe-cli.js account.setting.network-cost.enable --help`
-- Test network cost passthrough: `node bin/stripe-cli.js account.setting.network-cost.enable --help`
+- Test CLI help: `node bin/stripe-cli --help`
+- Test account list help: `node bin/stripe-cli account list --help`
+- Test with invalid key: `node bin/stripe-cli account list --key invalid_key`
+- Test with valid key: `node bin/stripe-cli account list --key rk_test_...`
+- Test account settings: `node bin/stripe-cli account.setting.network-cost.enable --help`
+- Test network cost passthrough: `node bin/stripe-cli account.setting.network-cost.enable --help`
 
 ## API Key Configuration
 
@@ -78,9 +78,14 @@ restricted_key=rk_live_your_live_restricted_key_here
 secret_key=sk_live_your_live_secret_key_here
 
 [daysmart]
-test_restricted_key=rk_test_your_daysmart_test_key_here
 restricted_key=rk_live_your_daysmart_live_key_here
+
+[daysmart-uat]
+restricted_key=rk_test_your_daysmart_uat_key_here
+secret_key=sk_test_your_daysmart_uat_key_here
 ```
+
+For **-uat** / **-test** sections (dedicated UAT/test profiles), use the same variable names as prod: `restricted_key`, `secret_key`, `public_key` (no `test_` prefix). For combined prod+test sections, use `test_restricted_key`, `test_secret_key` for test keys. Platform names ending with `-test` or `-uat`, or with `mode: "test"` in config, use the test environment by default.
 
 And configure platforms in `config.yml`:
 
@@ -92,13 +97,19 @@ global:
 platform:
   vet:
     account: "acct_18yYltEdgy9m3MPr"
-    prod_connected_account: "acct_1MzSRtROT734hn6m"
-    test_connected_account: "acct_1Rw31tRLzvnMBwNL"
+    connected_account: "acct_1MzSRtROT734hn6m"
+  vet-uat:
+    mode: "test"
+    connected_account: "acct_1Rw31tRLzvnMBwNL"
   daysmart:
     account: "acct_1LLF4ZFUW1wgLnXK"
-    prod_connected_account: "acct_1Mj22d2V2NLzChjM"
-    test_connected_account: ""
+  daysmart-uat:
+    mode: "test"
+    account: "acct_1LLF4ZFUW1wgLnXK"
+    connected_account: "acct_1MMHptFa2mkwl760"
 ```
+
+Each platform entry can have a single `connected_account`; use `mode: "test"` for UAT/test entries. UAT entries without `account` inherit from the base platform (e.g. `vet-uat` uses `vet`'s account).
 
 ### Platform Commands
 
@@ -181,7 +192,7 @@ The configuration file uses Stripe's official test tokens to ensure successful v
 ## Adding New Commands
 
 1. Create new command file in `lib/commands/`
-2. Import and register in `bin/stripe-cli.js`
+2. Import and register in `bin/stripe-cli`
 3. Follow existing patterns for:
    - Error handling (StripeAuthenticationError, StripePermissionError, etc.)
    - Output formatting (table and JSON formats)
@@ -286,7 +297,7 @@ When working with Stripe API parameters, endpoints, or features:
 ## Common Issues
 
 - **Module not found errors**: Run `npm install` first
-- **Permission denied**: Make sure `bin/stripe-cli.js` is executable
+- **Permission denied**: Make sure `bin/stripe-cli` is executable
 - **Invalid API key**: Ensure key starts with `sk_` or `rk_`
 - **No accounts found**: Check if you have Connect accounts in your Stripe dashboard
 - **API parameter errors**: Always verify parameters against official Stripe documentation

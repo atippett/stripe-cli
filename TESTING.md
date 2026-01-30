@@ -23,7 +23,7 @@ Current coverage metrics:
 - **lib/profile-manager.js**: 94.8% statements, 96% lines
 - **lib/stripe-client.js**: 95.23% statements, 95.23% lines
 - **lib/commands/cards.js**: 87.09% statements, 88.51% lines
-- **bin/stripe-cli.js**: 0% (CLI entry point, tested via integration tests)
+- **bin/stripe-cli**: 0% (CLI entry point, tested via integration tests)
 
 ## 🚀 Running Tests
 

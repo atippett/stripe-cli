@@ -47,7 +47,7 @@ jobs:
         echo "git clone https://github.com/${{ github.repository }}.git" >> release_notes.md
         echo "cd stripe-cli" >> release_notes.md
         echo "npm install" >> release_notes.md
-        echo "chmod +x bin/stripe-cli.js" >> release_notes.md
+        echo "chmod +x bin/stripe-cli" >> release_notes.md
         echo '```' >> release_notes.md
 
     - name: Update Release Notes

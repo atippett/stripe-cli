@@ -3,7 +3,7 @@ const path = require('path');
 const fs = require('fs');
 
 describe('CLI Integration Tests', () => {
-  const cliPath = path.join(__dirname, '../bin/stripe-cli.js');
+  const cliPath = path.join(__dirname, '../bin/stripe-cli');
 
   describe('Help Commands', () => {
     test('should show main help', (done) => {

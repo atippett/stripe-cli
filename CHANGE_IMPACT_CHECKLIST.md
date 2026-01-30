@@ -5,7 +5,7 @@ When making significant changes to the codebase, use this checklist to ensure al
 ## Command Structure Changes
 When changing CLI commands (e.g., `cards import` → `account.import.card`):
 
-- [ ] Update command definitions in `bin/stripe-cli.js`
+- [ ] Update command definitions in `bin/stripe-cli`
 - [ ] Update all test files that reference the old command
 - [ ] Update documentation files (README.md, AGENTS.md, etc.)
 - [ ] Update help text and descriptions

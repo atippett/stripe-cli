@@ -14,10 +14,14 @@ platform:
     account: "acct_18yYltEdgy9m3MPr"
     prod_connected_account: "acct_1MzSRtROT734hn6m"
     test_connected_account: "acct_1Rw31tRLzvnMBwNL" 
+  # Daysmart production profile
   daysmart:
     account: "acct_1LLF4ZFUW1wgLnXK"
     prod_connected_account: "acct_1Mj22d2V2NLzChjM"
-    test_connected_account: ""
+  # Daysmart test profile (separate from production)
+  daysmart-test:
+    account: "acct_1LLF4ZFUW1wgLnXK"
+    test_connected_account: "acct_1MMHptFa2mkwl760"
   ttp:
     account: "acct_1EN24zFPddEoAyG1"
     #prod_connected_account: "acct_1Mj22d2V2NLzChjM"
@@ -40,6 +44,10 @@ commands:
     key: "restricted"
   "test.account.generate":
     key: "secret"
+  "account.capabilities.request":
+    key: "restricted"
+  "account.capabilities.list":
+    key: "restricted"
   # Add more commands here as needed
   # "account.list":
   #   key: "restricted"

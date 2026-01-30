@@ -4,10 +4,10 @@
   "description": "A CLI tool for making Stripe API calls",
   "main": "index.js",
   "bin": {
-    "stripe-cli": "./bin/stripe-cli.js"
+    "stripe-cli": "./bin/stripe-cli"
   },
   "scripts": {
-    "start": "node bin/stripe-cli.js",
+    "start": "node bin/stripe-cli",
     "test": "jest",
     "test:unit": "jest --selectProjects unit",
     "test:integration": "jest --selectProjects integration",
