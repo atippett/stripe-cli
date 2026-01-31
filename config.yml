@@ -34,8 +34,6 @@ platform:
 
   ttp:
     account: "acct_1EN24zFPddEoAyG1"
-    #prod_connected_account: "acct_1Mj22d2V2NLzChjM"
-    #test_connected_account: "acct_1Mj22d2V2NLzChjM"
 
 commands:
   "account.setting.network-cost.enable":
