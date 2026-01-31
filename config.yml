@@ -12,16 +12,26 @@ global:
 platform:
   vet:
     account: "acct_18yYltEdgy9m3MPr"
-    prod_connected_account: "acct_1MzSRtROT734hn6m"
-    test_connected_account: "acct_1Rw31tRLzvnMBwNL" 
+    connected_account: "acct_1MzSRtROT734hn6m"
+
+  vet-uat:
+    mode: "test"
+    connected_account: "acct_1Rw31tRLzvnMBwNL"    
+
   # Daysmart production profile
   daysmart:
     account: "acct_1LLF4ZFUW1wgLnXK"
-    prod_connected_account: "acct_1Mj22d2V2NLzChjM"
+    
   # Daysmart test profile (separate from production)
-  daysmart-test:
+  daysmart-uat:
     account: "acct_1LLF4ZFUW1wgLnXK"
-    test_connected_account: "acct_1MMHptFa2mkwl760"
+    connected_account: "acct_1MMHptFa2mkwl760"
+
+  # Daysmart production profile
+  dash-uat:
+    account: "acct_1Lq7dbK4siagmU0S"
+    connected_account: "acct_1NJ1GmGbCZLRoQrm"
+
   ttp:
     account: "acct_1EN24zFPddEoAyG1"
     #prod_connected_account: "acct_1Mj22d2V2NLzChjM"
@@ -47,6 +57,8 @@ commands:
   "account.capabilities.request":
     key: "restricted"
   "account.capabilities.list":
+    key: "restricted"
+  "account.customer.delete":
     key: "restricted"
   # Add more commands here as needed
   # "account.list":

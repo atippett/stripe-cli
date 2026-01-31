@@ -10,6 +10,7 @@ const {
   deleteNetworkCostPassthroughScheme 
 } = require('../lib/commands/account-settings');
 const { importCards } = require('../lib/commands/cards');
+const { deleteCustomer, deleteAllCustomers, deleteCustomersByMetadata } = require('../lib/commands/customer');
 const { generateTestAccounts } = require('../lib/commands/test-account');
 const ProfileManager = require('../lib/profile-manager');
 
@@ -57,7 +58,7 @@ program
 program
   .command('account.import.card')
   .description('Import card data from CSV file to a Stripe connected account')
-  .option('-f, --file <file>', 'CSV file path (required)')
+  .option('-f, --file <file>', 'CSV file path (or use stdin: account.import.card -a <acct> < file.csv)')
   .option('-a, --account <account>', 'Platform account ID (required)')
   .option('-ca, --connected-account <connected_account>', 'Connected account ID associated with platform account')
   .option('-k, --key <key>', 'Stripe secret key (or set STRIPE_SECRET_KEY env var)')
@@ -66,10 +67,45 @@ program
   .option('--dry-run', 'Validate CSV without creating cards')
   .option('--verbose', 'Show detailed progress output')
   .option('--delimiter <delimiter>', 'CSV delimiter (default: comma)', ',')
-  .option('-o, --output <output>', 'Output CSV file name (default: imported_cards_TIMESTAMP.csv)')
+  .option('-m, --metadata <key=value...>', 'Add metadata to imported customers (e.g. --metadata env=uat --metadata source=cli). If omitted, import_date is set automatically.')
+  .option('--source <source>', 'CSV source format: cardpointe (same as --source-cardpointe)')
+  .option('--source-cardpointe', 'CSV is CardPointe format')
   .action(async (options) => {
     try {
+      if (options.sourceCardpointe || (options.source && options.source.toLowerCase() === 'cardpointe')) {
+        options.source = 'cardpointe';
+      }
       await importCards(options);
+    } catch (error) {
+      console.error(chalk.red('Error:'), error.message);
+      process.exit(1);
+    }
+  });
+
+// Account customer delete (single customer, --all, or --metadata)
+program
+  .command('account.customer.delete [customer_id]')
+  .description('Delete a customer by ID, by metadata (--metadata key=value), or delete all (test keys only) with --all')
+  .option('--all', 'Delete all customers on the account (test keys only, prompts for each)')
+  .option('--metadata <key=value>', 'Search for customers with this metadata and delete them (prompts for each, e.g. --metadata import_date=2026-01-30T23:44:00.000Z)')
+  .option('-k, --key <key>', 'Stripe secret key (or set STRIPE_SECRET_KEY env var)')
+  .option('-p, --platform <platform>', 'Use platform from .secrets config file')
+  .option('-a, --account <account>', 'Account context (platform or connected account)')
+  .option('-ca, --connected-account <connected_account>', 'Connected account where the customer lives (overrides -a)')
+  .option('--format <format>', 'Output format (table, json)', 'table')
+  .action(async (customerId, options) => {
+    try {
+      if (options.metadata) {
+        await deleteCustomersByMetadata(options);
+      } else if (options.all) {
+        await deleteAllCustomers(options);
+      } else if (customerId) {
+        options.delete = customerId;
+        await deleteCustomer(options);
+      } else {
+        console.error(chalk.red('Error:'), 'Specify a customer ID, --metadata key=value, or --all (e.g. account.customer.delete cus_xxx or account.customer.delete --metadata import_date=2026-01-30T23:44:00.000Z or account.customer.delete --all).');
+        process.exit(1);
+      }
     } catch (error) {
       console.error(chalk.red('Error:'), error.message);
       process.exit(1);
