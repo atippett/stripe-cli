@@ -43,6 +43,16 @@ stripe-cli/
 └── AGENTS.md
 ```
 
+## Keeping README.md in sync
+
+**Whenever you add, change, or remove CLI commands or behavior, update README.md in the same change.**
+
+- **Commands** – Adding or changing anything in `bin/stripe-cli` (new commands, new options, renamed commands) → update the relevant section and examples in README.md.
+- **Behavior** – Changing behavior in `lib/commands/` (e.g. new flags, output format, prompts) → update README.md so usage, options, and examples match.
+- **Config** – Changing how `config.yml` or `.secrets` is used → update the Configuration section in README.md.
+
+Do not wait for the user to ask; treat README updates as part of the same task when you modify the CLI.
+
 ## Testing Instructions
 
 - Test CLI help: `node bin/stripe-cli --help`
