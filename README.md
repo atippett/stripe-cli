@@ -4,7 +4,7 @@ A command-line tool for making Stripe API calls, including Connect account manag
 
 ## Features
 
-- **Connect accounts**: List and search Connect accounts with table or JSON output
+- **Connect accounts**: List and search Connect accounts; create account links for Connect onboarding
 - **Card import**: Import card data from CSV to a connected account (default or CardPointe format), with live progress bar and metadata tagging
 - **Customer management**: Delete customers by ID, by metadata, or all (test keys only), with y/n/ALL prompts
 - **Network cost passthrough**: Enable, disable, check status, and delete scheduled schemes for connected accounts
@@ -66,7 +66,6 @@ platform:
     connected_account: "acct_1MzSRtROT734hn6m"
 
   vet-uat:
-    mode: "test"
     connected_account: "acct_1Rw31tRLzvnMBwNL"
 
   daysmart:
@@ -75,17 +74,18 @@ platform:
   daysmart-uat:
     account: "acct_1LLF4ZFUW1wgLnXK"
     connected_account: "acct_1MMHptFa2mkwl760"
-    mode: "test"
 ```
 
-- **UAT/test platforms** (e.g. `vet-uat`, `daysmart-uat`): Dedicated profiles in `.secrets` with the same key names (`restricted_key`, `secret_key`, etc.) but test key values. In `config.yml` they use `mode: "test"` and a test `connected_account`. Use `-p vet-uat` or `-p daysmart-uat` to run against test.
+- **UAT/test platforms** (e.g. `vet-uat`, `daysmart-uat`): Platform names ending with `-uat` or `-test` imply test mode. Use dedicated profiles in `.secrets` with test keys and `connected_account` in `config.yml`. Use `-p vet-uat` or `-p daysmart-uat` to run against test.
 - **`account`**: Platform account ID; required for some commands.
 - **`connected_account`**: Single connected account for that platform (used for import, customer delete, etc.).
 
-Then use the `-p` flag:
+Use the `-p` and `-k` flags (global; can appear before or after the command):
 
 ```bash
+./bin/stripe-cli -p vet account.list
 ./bin/stripe-cli account.list -p vet
+./bin/stripe-cli -p daysmart-uat account.import.card -ca acct_xxx < cards.csv
 ./bin/stripe-cli account.import.card -p daysmart-uat -ca acct_xxx < cards.csv
 ```
 
@@ -108,6 +108,17 @@ Then use the `-p` flag:
 ./bin/stripe-cli account.search "*vet*" -p vet
 ```
 
+### Account link (Connect onboarding)
+
+Create a [Stripe account link](https://docs.stripe.com/api/account_links/create) for Connect onboarding. Single-use URL; the account can be given with `-a` or taken from the profile’s `account` in config.yml when using `-p` (or the default platform).
+
+```bash
+./bin/stripe-cli account.link -p vet
+./bin/stripe-cli account.link -a acct_xxx --type account_onboarding --refresh-url https://yourapp.com/reauth --return-url https://yourapp.com/return --format json
+```
+
+Options: `-a, --account` (optional if profile has `account` in config.yml), `--type` (account_onboarding | account_update), `--refresh-url`, `--return-url`, `--collection-fields` (currently_due | eventually_due), `--collection-future-requirements` (include | omit), `-k`, `-p`, `-f, --format`.
+
 ### Card import
 
 Import cards from CSV into a Stripe connected account. Creates customers, payment methods, and setup intents. Output is CSV (or JSON with `--format json`) to **stdout**; progress and summary go to stderr.
@@ -119,7 +130,9 @@ Import cards from CSV into a Stripe connected account. Creates customers, paymen
 - `-ca, --connected-account` – Connected account to import into
 - `-p, --platform` – Platform from `.secrets`
 - `-m, --metadata <key=value...>` – Metadata on created customers (e.g. `--metadata env=uat`). If omitted, `import_date` (ISO timestamp) is set automatically so imports can be tagged and reverted.
-- `--source cardpointe` or `--source-cardpointe` – CardPointe CSV format (see below)
+- `--source cardpointe` or `--source-cardpointe` – CardPointe CSV format (see below). CardPointe format is auto-detected when the CSV has `card number` and `expiry` columns.
+- `--limit <number>` – Import only the first N cards from the file
+- `--concurrency <number>` – Max concurrent imports (default: 5, max: 20)
 - `--dry-run` – Validate CSV only, no API calls
 - `--verbose` – Per-card progress
 - `--delimiter` – CSV delimiter (default: comma)
@@ -138,6 +151,12 @@ Import cards from CSV into a Stripe connected account. Creates customers, paymen
 
 # Dry run
 ./bin/stripe-cli account.import.card -p dash-uat -ca acct_xxx --dry-run < cards.csv
+
+# Import only first 10 cards
+./bin/stripe-cli account.import.card -p dash-uat -ca acct_xxx --limit 10 -f cards.csv
+
+# Import with higher concurrency (faster for large files)
+./bin/stripe-cli account.import.card -p dash-uat -ca acct_xxx -f cards.csv --concurrency 10
 ```
 
 **Default CSV columns:** `card`, `exp`, `first`, `last`, `zip`, `token`
@@ -195,7 +214,7 @@ stripe-cli/
 │   └── stripe-cli              # CLI entry point
 ├── lib/
 │   ├── commands/
-│   │   ├── account.js          # account.list, account.search
+│   │   ├── account.js          # account.list, account.search, account.link
 │   │   ├── account-settings.js # network cost passthrough
 │   │   ├── capabilities.js     # account.capabilities.*
 │   │   ├── cards.js            # account.import.card

@@ -95,7 +95,7 @@ restricted_key=rk_test_your_daysmart_uat_key_here
 secret_key=sk_test_your_daysmart_uat_key_here
 ```
 
-For **-uat** / **-test** sections (dedicated UAT/test profiles), use the same variable names as prod: `restricted_key`, `secret_key`, `public_key` (no `test_` prefix). For combined prod+test sections, use `test_restricted_key`, `test_secret_key` for test keys. Platform names ending with `-test` or `-uat`, or with `mode: "test"` in config, use the test environment by default.
+For **-uat** / **-test** sections (dedicated UAT/test profiles), use the same variable names as prod: `restricted_key`, `secret_key`, `public_key` (no `test_` prefix). For combined prod+test sections, use `test_restricted_key`, `test_secret_key` for test keys. Platform names ending with `-test` or `-uat` use the test environment by default.
 
 And configure platforms in `config.yml`:
 
@@ -109,17 +109,15 @@ platform:
     account: "acct_18yYltEdgy9m3MPr"
     connected_account: "acct_1MzSRtROT734hn6m"
   vet-uat:
-    mode: "test"
     connected_account: "acct_1Rw31tRLzvnMBwNL"
   daysmart:
     account: "acct_1LLF4ZFUW1wgLnXK"
   daysmart-uat:
-    mode: "test"
     account: "acct_1LLF4ZFUW1wgLnXK"
     connected_account: "acct_1MMHptFa2mkwl760"
 ```
 
-Each platform entry can have a single `connected_account`; use `mode: "test"` for UAT/test entries. UAT entries without `account` inherit from the base platform (e.g. `vet-uat` uses `vet`'s account).
+Each platform entry can have a single `connected_account`. Platform names ending with `-uat` or `-test` use test mode. UAT entries without `account` inherit from the base platform (e.g. `vet-uat` uses `vet`'s account).
 
 ### Platform Commands
 
@@ -128,6 +126,7 @@ Each platform entry can have a single `connected_account`; use `mode: "test"` fo
 - `stripe-cli account.list` - Use default platform
 - `stripe-cli account.search "veterinary"` - Search accounts with fuzzy matching
 - `stripe-cli account.search "*vet*"` - Search with wildcards
+- `stripe-cli account.link -p vet` - Create Stripe account link for Connect onboarding (uses profile’s account from config.yml); or `-a acct_123`; optional `--type`, `--refresh-url`, `--return-url`, `--collection-fields`, `--collection-future-requirements`
 
 ### Account Settings Commands
 
@@ -142,6 +141,8 @@ Each platform entry can have a single `connected_account`; use `mode: "test"` fo
 - `stripe-cli account.import.card -f cards.csv -a acct_123 --dry-run` - Validate CSV without creating cards
 - `stripe-cli account.import.card -f cards.csv -a acct_123 --verbose` - Import with detailed progress output
 - `stripe-cli account.import.card -f cards.csv -a acct_123 --delimiter ";"` - Use custom CSV delimiter
+- `stripe-cli account.import.card -f cards.csv -a acct_123 --limit 10` - Import only first 10 cards
+- `stripe-cli account.import.card -f cards.csv -a acct_123 --concurrency 10` - Import with higher concurrency (faster for large files)
 
 #### CSV Format Requirements
 

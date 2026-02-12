@@ -2,7 +2,7 @@
 
 const { Command } = require('commander');
 const chalk = require('chalk');
-const { listAccounts, searchAccounts } = require('../lib/commands/account');
+const { listAccounts, searchAccounts, createAccountLink } = require('../lib/commands/account');
 const { 
   enableNetworkCostPassthrough, 
   disableNetworkCostPassthrough, 
@@ -19,7 +19,20 @@ const program = new Command();
 program
   .name('stripe-cli')
   .description('A CLI tool for making Stripe API calls')
-  .version('1.0.0');
+  .version('1.0.0')
+  .option('-k, --key <key>', 'Stripe secret key (or set STRIPE_SECRET_KEY env var)')
+  .option('-p, --platform <platform>', 'Use platform from .secrets config file');
+
+function mergeOptions(cmdOptions) {
+  const globalOpts = program.opts();
+  const merged = { ...globalOpts };
+  for (const [key, value] of Object.entries(cmdOptions)) {
+    if (value !== undefined) {
+      merged[key] = value;
+    }
+  }
+  return merged;
+}
 
 // Account list command
 program
@@ -30,7 +43,29 @@ program
   .option('-f, --format <format>', 'Output format (table, json)', 'table')
   .action(async (options) => {
     try {
-      await listAccounts(options);
+      await listAccounts(mergeOptions(options));
+    } catch (error) {
+      console.error(chalk.red('Error:'), error.message);
+      process.exit(1);
+    }
+  });
+
+// Account link command (Stripe Account Links API: https://docs.stripe.com/api/account_links/create)
+program
+  .command('account.link')
+  .description('Create a Stripe account link for Connect onboarding. Single-use URL; account from -a or profile.')
+  .option('-a, --account <account>', 'Account ID (optional if profile has account in config.yml)')
+  .option('--type <type>', 'Link type: account_onboarding | account_update', 'account_onboarding')
+  .option('--refresh-url <url>', 'URL if link is expired or invalid (required)', 'https://example.com/reauth')
+  .option('--return-url <url>', 'URL after leaving or completing the flow (required)', 'https://example.com/return')
+  .option('--collection-fields <fields>', 'Requirements to collect: currently_due | eventually_due')
+  .option('--collection-future-requirements <value>', 'Collect future_requirements: include | omit')
+  .option('-k, --key <key>', 'Stripe secret key (or set STRIPE_SECRET_KEY env var)')
+  .option('-p, --platform <platform>', 'Use platform from .secrets config file')
+  .option('-f, --format <format>', 'Output format (table, json)', 'table')
+  .action(async (options) => {
+    try {
+      await createAccountLink(mergeOptions(options));
     } catch (error) {
       console.error(chalk.red('Error:'), error.message);
       process.exit(1);
@@ -46,8 +81,9 @@ program
   .option('-f, --format <format>', 'Output format (table, json)', 'table')
   .action(async (searchTerm, options) => {
     try {
-      options.searchTerm = searchTerm;
-      await searchAccounts(options);
+      const opts = mergeOptions(options);
+      opts.searchTerm = searchTerm;
+      await searchAccounts(opts);
     } catch (error) {
       console.error(chalk.red('Error:'), error.message);
       process.exit(1);
@@ -58,12 +94,14 @@ program
 program
   .command('account.import.card')
   .description('Import card data from CSV file to a Stripe connected account')
-  .option('-f, --file <file>', 'CSV file path (or use stdin: account.import.card -a <acct> < file.csv)')
-  .option('-a, --account <account>', 'Platform account ID (required)')
+  .option('-f, --file <file>', 'CSV file path (or use stdin: account.import.card [-p platform] [-a acct] < file.csv)')
+  .option('-a, --account <account>', 'Platform account ID (optional if profile has account in config.yml)')
   .option('-ca, --connected-account <connected_account>', 'Connected account ID associated with platform account')
   .option('-k, --key <key>', 'Stripe secret key (or set STRIPE_SECRET_KEY env var)')
   .option('-p, --platform <platform>', 'Use platform from .secrets config file')
   .option('--format <format>', 'Output format (table, json)', 'table')
+  .option('--limit <number>', 'Import only the first N cards from the file')
+  .option('--concurrency <number>', 'Max concurrent imports (default: 5)', '5')
   .option('--dry-run', 'Validate CSV without creating cards')
   .option('--verbose', 'Show detailed progress output')
   .option('--delimiter <delimiter>', 'CSV delimiter (default: comma)', ',')
@@ -72,10 +110,11 @@ program
   .option('--source-cardpointe', 'CSV is CardPointe format')
   .action(async (options) => {
     try {
-      if (options.sourceCardpointe || (options.source && options.source.toLowerCase() === 'cardpointe')) {
-        options.source = 'cardpointe';
+      const opts = mergeOptions(options);
+      if (opts.sourceCardpointe || (opts.source && opts.source.toLowerCase() === 'cardpointe')) {
+        opts.source = 'cardpointe';
       }
-      await importCards(options);
+      await importCards(opts);
     } catch (error) {
       console.error(chalk.red('Error:'), error.message);
       process.exit(1);
@@ -95,13 +134,14 @@ program
   .option('--format <format>', 'Output format (table, json)', 'table')
   .action(async (customerId, options) => {
     try {
-      if (options.metadata) {
-        await deleteCustomersByMetadata(options);
-      } else if (options.all) {
-        await deleteAllCustomers(options);
+      const opts = mergeOptions(options);
+      if (opts.metadata) {
+        await deleteCustomersByMetadata(opts);
+      } else if (opts.all) {
+        await deleteAllCustomers(opts);
       } else if (customerId) {
-        options.delete = customerId;
-        await deleteCustomer(options);
+        opts.delete = customerId;
+        await deleteCustomer(opts);
       } else {
         console.error(chalk.red('Error:'), 'Specify a customer ID, --metadata key=value, or --all (e.g. account.customer.delete cus_xxx or account.customer.delete --metadata import_date=2026-01-30T23:44:00.000Z or account.customer.delete --all).');
         process.exit(1);
@@ -121,7 +161,7 @@ program
   .option('-p, --platform <platform>', 'Use platform from .secrets config file')
   .action(async (options) => {
     try {
-      await enableNetworkCostPassthrough(options);
+      await enableNetworkCostPassthrough(mergeOptions(options));
     } catch (error) {
       console.error(chalk.red('Error:'), error.message);
       process.exit(1);
@@ -137,7 +177,7 @@ program
   .option('-p, --platform <platform>', 'Use platform from .secrets config file')
   .action(async (options) => {
     try {
-      await disableNetworkCostPassthrough(options);
+      await disableNetworkCostPassthrough(mergeOptions(options));
     } catch (error) {
       console.error(chalk.red('Error:'), error.message);
       process.exit(1);
@@ -153,7 +193,7 @@ program
   .option('-p, --platform <platform>', 'Use platform from .secrets config file')
   .action(async (options) => {
     try {
-      await getNetworkCostPassthroughStatus(options);
+      await getNetworkCostPassthroughStatus(mergeOptions(options));
     } catch (error) {
       console.error(chalk.red('Error:'), error.message);
       process.exit(1);
@@ -170,7 +210,7 @@ program
   .option('-p, --platform <platform>', 'Use platform from .secrets config file')
   .action(async (options) => {
     try {
-      await deleteNetworkCostPassthroughScheme(options);
+      await deleteNetworkCostPassthroughScheme(mergeOptions(options));
     } catch (error) {
       console.error(chalk.red('Error:'), error.message);
       process.exit(1);
@@ -188,7 +228,7 @@ program
   .option('-e, --environment <environment>', 'Environment to use (test or prod)', 'prod')
   .action(async (options) => {
     try {
-      await generateTestAccounts(options);
+      await generateTestAccounts(mergeOptions(options));
     } catch (error) {
       console.error(chalk.red('Error:'), error.message);
       process.exit(1);
@@ -201,7 +241,7 @@ program
   .description('List all configured platforms and their settings')
   .action(async () => {
     try {
-      const { getAvailablePlatforms, getDefaultProfile, getTestProfile, getPlatformConfig } = require('../lib/config-loader');
+      const { getAvailablePlatforms, getDefaultProfile, getTestProfile, getPlatformConfig, getPlatformProdConnectedAccount, getPlatformTestConnectedAccount } = require('../lib/config-loader');
       
       const platforms = getAvailablePlatforms();
       const defaultPlatform = getDefaultProfile();
@@ -222,10 +262,12 @@ program
       
       platforms.forEach(platformName => {
         const platformConfig = getPlatformConfig(platformName);
+        const prodConnected = getPlatformProdConnectedAccount(platformName);
+        const testConnected = getPlatformTestConnectedAccount(platformName);
         console.log(`[${platformName}]`);
         console.log(`  Account: ${platformConfig.account || 'Not configured'}`);
-        console.log(`  Production Connected Account: ${platformConfig.prod_connected_account || 'Not configured'}`);
-        console.log(`  Test Connected Account: ${platformConfig.test_connected_account || 'Not configured'}`);
+        console.log(`  Production Connected Account: ${prodConnected || 'Not configured'}`);
+        console.log(`  Test Connected Account: ${testConnected || 'Not configured'}`);
         console.log('');
       });
     } catch (error) {

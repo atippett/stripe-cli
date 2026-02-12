@@ -15,19 +15,21 @@ platform:
     connected_account: "acct_1MzSRtROT734hn6m"
 
   vet-uat:
-    mode: "test"
     connected_account: "acct_1Rw31tRLzvnMBwNL"    
 
   # Daysmart production profile
   daysmart:
     account: "acct_1LLF4ZFUW1wgLnXK"
     
-  # Daysmart test profile (separate from production)
+  # Daysmart test profile (-uat suffix indicates test; use -p daysmart-uat)
   daysmart-uat:
     account: "acct_1LLF4ZFUW1wgLnXK"
     connected_account: "acct_1MMHptFa2mkwl760"
 
   # Daysmart production profile
+  dash:
+    account: "acct_1Lq7dbK4siagmU0S"
+  
   dash-uat:
     account: "acct_1Lq7dbK4siagmU0S"
     connected_account: "acct_1NJ1GmGbCZLRoQrm"
@@ -58,6 +60,8 @@ commands:
     key: "restricted"
   "account.customer.delete":
     key: "restricted"
+  "account.link":
+    key: "secret"
   # Add more commands here as needed
   # "account.list":
   #   key: "restricted"
