@@ -12,6 +12,8 @@ const {
 const { importCards } = require('../lib/commands/cards');
 const { deleteCustomer, deleteAllCustomers, deleteCustomersByMetadata } = require('../lib/commands/customer');
 const { generateTestAccounts } = require('../lib/commands/test-account');
+const { listHardware, listHardwareCatalog } = require('../lib/commands/hardware');
+const { createSetupSession } = require('../lib/commands/checkout');
 const ProfileManager = require('../lib/profile-manager');
 
 const program = new Command();
@@ -21,7 +23,8 @@ program
   .description('A CLI tool for making Stripe API calls')
   .version('1.0.0')
   .option('-k, --key <key>', 'Stripe secret key (or set STRIPE_SECRET_KEY env var)')
-  .option('-p, --platform <platform>', 'Use platform from .secrets config file');
+  .option('-p, --platform <platform>', 'Use platform from .secrets config file')
+  .option('--api-version <version>', 'Stripe API version string (e.g. 2023-10-16 or 2025-04-28.basil)');
 
 function mergeOptions(cmdOptions) {
   const globalOpts = program.opts();
@@ -229,6 +232,66 @@ program
   .action(async (options) => {
     try {
       await generateTestAccounts(mergeOptions(options));
+    } catch (error) {
+      console.error(chalk.red('Error:'), error.message);
+      process.exit(1);
+    }
+  });
+
+// Hardware list command (Terminal readers)
+program
+  .command('hardware.list')
+  .description('List Stripe Terminal readers (hardware devices)')
+  .option('-k, --key <key>', 'Stripe secret key (or set STRIPE_SECRET_KEY env var)')
+  .option('-p, --platform <platform>', 'Use platform from .secrets config file')
+  .option('-f, --format <format>', 'Output format (table, json)', 'table')
+  .option('--limit <number>', 'Max number of readers to return (1-100)', '50')
+  .option('--status <status>', 'Filter by status: online | offline')
+  .option('--location <id>', 'Filter by location ID')
+  .option('--device-type <type>', 'Filter by device type (e.g. stripe_m2, bbpos_wisepos_e)')
+  .action(async (options) => {
+    try {
+      await listHardware(mergeOptions(options));
+    } catch (error) {
+      console.error(chalk.red('Error:'), error.message);
+      process.exit(1);
+    }
+  });
+
+// Hardware catalog command (Terminal hardware products)
+program
+  .command('hardware.catalog')
+  .description('List Stripe Terminal hardware products (available product types)')
+  .option('-k, --key <key>', 'Stripe secret key (or set STRIPE_SECRET_KEY env var)')
+  .option('-p, --platform <platform>', 'Use platform from .secrets config file')
+  .option('-f, --format <format>', 'Output format (table, json)', 'table')
+  .option('--limit <number>', 'Max number of products to return (1-100)', '50')
+  .option('--status <status>', 'Filter by status: available | unavailable')
+  .action(async (options) => {
+    try {
+      await listHardwareCatalog(mergeOptions(options));
+    } catch (error) {
+      console.error(chalk.red('Error:'), error.message);
+      process.exit(1);
+    }
+  });
+
+// Checkout session setup (Connect: create setup-mode session for connected account)
+program
+  .command('checkout.session.setup <connected_account>')
+  .description('Create a Checkout Session in setup mode for a connected account (e.g. collect US bank account). Returns the URL to direct the customer to.')
+  .option('-k, --key <key>', 'Stripe platform secret key (or set STRIPE_SECRET_KEY env var)')
+  .option('-p, --platform <platform>', 'Use platform from .secrets config file')
+  .option('--success-url <url>', 'URL to redirect after successful setup', 'https://www.example.com')
+  .option('--cancel-url <url>', 'URL to redirect if customer cancels', 'https://www.example.com')
+  .option('--currency <currency>', 'Currency code (e.g. usd)', 'usd')
+  .option('--payment-method-types <types>', 'Comma-separated payment method types (e.g. us_bank_account)', 'us_bank_account')
+  .option('--customer <id>', 'Optional Stripe Customer ID on the connected account to attach the payment method to')
+  .option('--customer-email <email>', 'Optional email to create a new customer on the connected account')
+  .option('-f, --format <format>', 'Output format (table, json)', 'table')
+  .action(async (connectedAccount, options) => {
+    try {
+      await createSetupSession(connectedAccount, mergeOptions(options));
     } catch (error) {
       console.error(chalk.red('Error:'), error.message);
       process.exit(1);

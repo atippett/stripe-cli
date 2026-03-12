@@ -5,6 +5,7 @@ A command-line tool for making Stripe API calls, including Connect account manag
 ## Features
 
 - **Connect accounts**: List and search Connect accounts; create account links for Connect onboarding
+- **Checkout session setup**: Create setup-mode Checkout Sessions for connected accounts (e.g. bank account collection via `customer_account`)
 - **Card import**: Import card data from CSV to a connected account (default or CardPointe format), with live progress bar and metadata tagging
 - **Customer management**: Delete customers by ID, by metadata, or all (test keys only), with y/n/ALL prompts
 - **Network cost passthrough**: Enable, disable, check status, and delete scheduled schemes for connected accounts
@@ -119,6 +120,17 @@ Create a [Stripe account link](https://docs.stripe.com/api/account_links/create)
 
 Options: `-a, --account` (optional if profile has `account` in config.yml), `--type` (account_onboarding | account_update), `--refresh-url`, `--return-url`, `--collection-fields` (currently_due | eventually_due), `--collection-future-requirements` (include | omit), `-k`, `-p`, `-f, --format`.
 
+### Checkout session setup (bank account collection)
+
+Create a Checkout Session in setup mode for a connected account (e.g. collect US bank account). Uses `customer_account` (Accounts v2) so the account is the customer and the payment method attaches directly to the account.
+
+```bash
+./bin/stripe-cli -p dash checkout.session.setup acct_1Sx7PnGmlKfuKPKU
+./bin/stripe-cli checkout.session.setup acct_xxx --success-url https://yourapp.com/success --cancel-url https://yourapp.com/cancel
+```
+
+Options: `--success-url`, `--cancel-url`, `--currency` (default: usd), `--payment-method-types` (default: us_bank_account), `--customer` (legacy Customer ID for stripeAccount flow), `--customer-email` (legacy flow), `-k`, `-p`, `-f, --format`.
+
 ### Card import
 
 Import cards from CSV into a Stripe connected account. Creates customers, payment methods, and setup intents. Output is CSV (or JSON with `--format json`) to **stdout**; progress and summary go to stderr.
@@ -218,6 +230,7 @@ stripe-cli/
 │   │   ├── account-settings.js # network cost passthrough
 │   │   ├── capabilities.js     # account.capabilities.*
 │   │   ├── cards.js            # account.import.card
+│   │   ├── checkout.js         # checkout.session.setup
 │   │   ├── customer.js         # account.customer.delete
 │   │   └── test-account.js     # test.account.generate
 │   ├── config-loader.js

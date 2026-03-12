@@ -7,6 +7,8 @@
 global:
   default_platform: "vet"
   test_platform: "vet"
+  # Value only (header name is set by the CLI). Match Stripe docs / curl exactly.
+  #stripe_api_version: "2026-01-28.preview; terminal_hardware_orders_beta=v5"
 
 # Platform configurations
 platform:
@@ -61,6 +63,8 @@ commands:
   "account.customer.delete":
     key: "restricted"
   "account.link":
+    key: "secret"
+  "checkout.session.setup":
     key: "secret"
   # Add more commands here as needed
   # "account.list":
