@@ -230,7 +230,7 @@ Options: `-k`, `-p`, `-a`, `-ca`, `--format`.
 Full-outer-join a CardConnect export (per-card rows) against a Stripe migration result CSV (the file Stripe returns after a card PM import). Joins on `profileid == old_id` + card last4 + expiry month/year. Output is a single CSV with every matched pair plus any unmatched rows from either side. Read-only and offline — no Stripe API calls.
 
 ```bash
-./bin/stripe-cli migrate.card.map acct_1SzNOXF8jXW0haeO \
+./bin/stripe-cli migrate.card.map \
   --cardconnect cc_export.csv \
   --stripe import_acct_xxx_card_pms_migreq_...csv \
   > tmp/cards_map.csv
@@ -238,12 +238,11 @@ Full-outer-join a CardConnect export (per-card rows) against a Stripe migration 
 
 Options:
 
-- `--cardconnect <file>` – CardConnect export CSV (required; needs columns `profileid`, `token`, `expiry`)
+- `--cardconnect <file>` – CardConnect export CSV (required; needs columns `profileid`, `acctid`, `token`, `expiry`; every `acctid` value must be a non-empty positive integer)
 - `--stripe <file>` – Stripe migration result CSV (required; needs columns `old_id`, `created_customer`, `source_new_id`, `card_last4`, `card_exp_month`, `card_exp_year`)
 - `--format <fmt>` – `csv` (default) or `json`
-- Positional `<connected_account>` – Stripe connected account ID (`acct_*`), emitted as a column for traceability
 
-**Output columns:** `match_status` (`matched` | `cardconnect_only` | `stripe_only`), `stripe_connected_account`, then all CardConnect columns, then all Stripe columns. Card numbers (`card`, `card number`) are masked. Summary counts go to stderr.
+**Output columns:** `match_status` (`matched` | `cardconnect_only` | `stripe_only`), `stripe_connected_account` (sniffed from the Stripe filename `import_acct_XXX_card_pms_…`; blank if the filename doesn't match), then all CardConnect columns, then all Stripe columns prefixed with `stripe_`. Card numbers (`card`, `card number`) are masked. Summary counts go to stderr.
 
 **Card last4 source:** taken from the CardConnect `token` column (CardConnect tokens preserve the original card's last 4 digits), so this works on no-PAN exports.
 

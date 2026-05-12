@@ -208,13 +208,12 @@ card,exp,first,last,zip,token
 
 ### Card Migration Commands
 
-`migrate.card.map <connected_account> --cardconnect <file> --stripe <file>` produces a unified mapping between a CardConnect export and a Stripe migration result CSV. It is an **offline full outer join** on `(profileid==old_id, last4, expiry_month, expiry_year)` — no Stripe API calls, no `-p`/`-k` needed.
+`migrate.card.map --cardconnect <file> --stripe <file>` produces a unified mapping between a CardConnect export and a Stripe migration result CSV. It is an **offline full outer join** on `(profileid==old_id, last4, expiry_month, expiry_year)` — no Stripe API calls.
 
 - **Inputs:**
-  - `--cardconnect <file>`: CardConnect export (per-card rows). Required columns: `profileid`, `token`, `expiry`. Card last4 is derived from the last 4 digits of `token`, so no-PAN exports work.
+  - `--cardconnect <file>`: CardConnect export (per-card rows). Required columns: `profileid`, `acctid`, `token`, `expiry`. Every `acctid` must be a non-empty positive integer; the command aborts before any join work if violations exist (showing up to 10 row numbers). Card last4 is derived from the last 4 digits of `token`, so no-PAN exports work.
   - `--stripe <file>`: Stripe migration result CSV (the file Stripe returns after running a card PM import). Required columns: `old_id`, `created_customer`, `source_new_id`, `card_last4`, `card_exp_month`, `card_exp_year`.
-  - `<connected_account>`: Stripe connected account ID (`acct_*`) — validated, emitted as a `stripe_connected_account` column for traceability.
-- **Output (stdout, CSV by default):** `match_status` (`matched` | `cardconnect_only` | `stripe_only`), `stripe_connected_account`, then all CardConnect columns, then all Stripe columns. Card numbers in `card` / `card number` columns are masked. Summary counts (matched / cardconnect_only / stripe_only) go to stderr.
+- **Output (stdout, CSV by default):** `match_status` (`matched` | `cardconnect_only` | `stripe_only`), `stripe_connected_account` (sniffed from the Stripe filename via `/import_(acct_[A-Za-z0-9]+)_card_pms/`; blank if the pattern doesn't match), then all CardConnect columns, then all Stripe columns prefixed with `stripe_` to prevent name collisions. Card numbers in `card` / `card number` columns are masked. Summary counts (matched / cardconnect_only / stripe_only) go to stderr.
 - **Why prefer this over hitting the API:** the Stripe migration result is the **authoritative snapshot at import time** — cards replaced or removed after the import don't cause false-negative card matches. Live-API matching produced 6 spurious `unmatched_card` rows that the offline join correctly resolves.
 
 ### Test Account Generation Commands

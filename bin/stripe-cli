@@ -143,14 +143,14 @@ program
 
 // Migrate: full-outer-join CardConnect export with Stripe migration import
 program
-  .command('migrate.card.map <connected_account>')
-  .description('Map CardConnect rows to Stripe customer + payment method IDs via a full outer join on (profileid==old_id, last4, expiry). Emits every matched pair plus any unmatched rows from either side. <connected_account> is the Stripe connected account ID (acct_*).')
+  .command('migrate.card.map')
+  .description('Map CardConnect rows to Stripe customer + payment method IDs via a full outer join on (profileid==old_id, last4, expiry). Emits every matched pair plus any unmatched rows from either side. Offline (no Stripe API calls).')
   .requiredOption('--cardconnect <file>', 'CardConnect export CSV')
   .requiredOption('--stripe <file>', 'Stripe migration result CSV')
   .option('--format <format>', 'Output format (csv, json)', 'csv')
-  .action(async (connectedAccount, options) => {
+  .action(async (options) => {
     try {
-      await mapCardConnect(connectedAccount, mergeOptions(options));
+      await mapCardConnect(mergeOptions(options));
     } catch (error) {
       console.error(chalk.red('Error:'), error.message);
       process.exit(1);
