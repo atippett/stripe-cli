@@ -10,10 +10,16 @@ const {
   deleteNetworkCostPassthroughScheme 
 } = require('../lib/commands/account-settings');
 const { importCards } = require('../lib/commands/cards');
+const { mapCardConnect } = require('../lib/commands/migrate-cards');
 const { deleteCustomer, deleteAllCustomers, deleteCustomersByMetadata } = require('../lib/commands/customer');
 const { generateTestAccounts } = require('../lib/commands/test-account');
 const { listHardware, listHardwareCatalog } = require('../lib/commands/hardware');
 const { createSetupSession } = require('../lib/commands/checkout');
+const {
+  runPipelineQuery,
+  runPipelineReport,
+  printAvailablePipelineReports
+} = require('../lib/commands/pipeline');
 const ProfileManager = require('../lib/profile-manager');
 
 const program = new Command();
@@ -35,6 +41,17 @@ function mergeOptions(cmdOptions) {
     }
   }
   return merged;
+}
+
+/** Extract a meaningful error message; DB/network errors sometimes have empty .message */
+function formatError(err) {
+  if (!err) return 'Unknown error';
+  const msg = err.message || err.msg;
+  if (msg && String(msg).trim()) return String(msg).trim();
+  if (err.code) return `${err.code}`;
+  if (err.stack) return err.stack.split('\n')[0].trim();
+  if (err.cause) return formatError(err.cause);
+  return String(err);
 }
 
 // Account list command
@@ -118,6 +135,22 @@ program
         opts.source = 'cardpointe';
       }
       await importCards(opts);
+    } catch (error) {
+      console.error(chalk.red('Error:'), error.message);
+      process.exit(1);
+    }
+  });
+
+// Migrate: full-outer-join CardConnect export with Stripe migration import
+program
+  .command('migrate.card.map <connected_account>')
+  .description('Map CardConnect rows to Stripe customer + payment method IDs via a full outer join on (profileid==old_id, last4, expiry). Emits every matched pair plus any unmatched rows from either side. <connected_account> is the Stripe connected account ID (acct_*).')
+  .requiredOption('--cardconnect <file>', 'CardConnect export CSV')
+  .requiredOption('--stripe <file>', 'Stripe migration result CSV')
+  .option('--format <format>', 'Output format (csv, json)', 'csv')
+  .action(async (connectedAccount, options) => {
+    try {
+      await mapCardConnect(connectedAccount, mergeOptions(options));
     } catch (error) {
       console.error(chalk.red('Error:'), error.message);
       process.exit(1);
@@ -292,6 +325,74 @@ program
   .action(async (connectedAccount, options) => {
     try {
       await createSetupSession(connectedAccount, mergeOptions(options));
+    } catch (error) {
+      console.error(chalk.red('Error:'), error.message);
+      process.exit(1);
+    }
+  });
+
+// Pipeline (Stripe Data Pipeline → Redshift) query
+program
+  .command('pipeline.query')
+  .description('Run a SQL query against the Stripe Data Pipeline Redshift database')
+  .option('-q, --query <sql>', 'SQL query to run')
+  .option('-f, --file <path>', 'Path to SQL file')
+  .option('--host <host>', 'Override Redshift host from config')
+  .option('--port <port>', 'Override Redshift port from config')
+  .option('--database <db>', 'Override database name from config')
+  .option('--no-ssl-verify', 'Skip SSL certificate verification (e.g. when using VPN/proxy)')
+  .option('-o, --format <format>', 'Output format (table, json, csv)', 'table')
+  .action(async (options) => {
+    try {
+      await runPipelineQuery(mergeOptions(options));
+    } catch (error) {
+      const msg = formatError(error);
+      process.stderr.write(chalk.red('Error: ') + msg + '\n');
+      process.exit(1);
+    }
+  });
+
+// Pipeline canned reports
+program
+  .command('pipeline.report [name]')
+  .description(
+    'Run a canned report (e.g. connect_volume), or omit name to list reports. SQL files live in reports/*.sql'
+  )
+  .option('--period <period>', 'Time period: mtd, yesterday, today, prior_month, last7, last30, last90, last12m, last6m, 7d, 30d, 90d, YYYY-MM (full month), YYYY-MM-DD, or YYYY-MM-DD..YYYY-MM-DD')
+  .option('--days <n>', 'Number of days to look back (default 30, ignored if --period set)')
+  .option('--limit <n>', 'Max rows to return', '100')
+  .option('--type <type>', 'Payment method type: card, us_bank_account, etc. Default: all (no filter). Use "all" explicitly to group by type')
+  .option('--normalize', 'Convert all currencies to USD using exchange_rates_from_usd')
+  .option('--schema <name>', 'Schema prefix (e.g. stripe, STRIPE). Overrides config.')
+  .option(
+    '--buyrates-date-column <col>',
+    'buyrates report only: itemized_fees timestamp column for date filter (default: config buyrates_date_column or activity_at)'
+  )
+  .option('--data-load-times-schema <name>', 'Schema for data_load_times (default: config data_load_times_schema or same as --schema)')
+  .option('--skip-data-load-times', 'Do not query data_load_times after the report')
+  .option('--no-ssl-verify', 'Skip SSL certificate verification')
+  .option('-o, --format <format>', 'Output format (table, json, csv)', 'table')
+  .action(async (name, options) => {
+    try {
+      const trimmed = name != null ? String(name).trim() : '';
+      if (!trimmed) {
+        printAvailablePipelineReports();
+        return;
+      }
+      await runPipelineReport(trimmed, mergeOptions(options));
+    } catch (error) {
+      const msg = formatError(error);
+      process.stderr.write(chalk.red('Error: ') + msg + '\n');
+      process.exit(1);
+    }
+  });
+
+program
+  .command('pipeline.report.list')
+  .description('List available canned reports (same as pipeline.report with no name)')
+  .action(() => {
+    try {
+      printAvailablePipelineReports();
     } catch (error) {
       console.error(chalk.red('Error:'), error.message);
       process.exit(1);

@@ -66,6 +66,177 @@ commands:
     key: "secret"
   "checkout.session.setup":
     key: "secret"
+  "pipeline":
+    host: "vpn-warehouse.data.dssvc.io"
+    port: 5439
+    database: "warehouse"
+    schema: "stripe"  # Schema for reports (e.g. stripe, STRIPE)
+    # Optional: if data_load_times lives elsewhere (Stripe SDP default: same schema as reports)
+    # data_load_times_schema: "stripe"
+    # buyrates report: itemized_fees column for WHERE date range (default activity_at)
+    # buyrates_date_column: "incurred_at"   # override if your table differs
+    no_ssl_verify: true  # VPN/proxy hostname doesn't match Redshift cert
+    # user and password from env: PIPELINE_USER, PIPELINE_PASSWORD (or .secrets [pipeline] user, password)
+    #
+    # Optional: target buyrate per product_feature_description (must match Stripe). Keys quoted.
+    # Per currency: nested map (usd/gbp/...) — row uses the key matching itemized_fees.currency (case-insensitive).
+    # Scalar number: same target on every currency row (legacy).
+    # Hide a fee from the buyrates table: use an object with display: false (optional usd/gbp ignored for output).
+    # group: "Section name" (optional) — buyrates table inserts a full-row header, then fees sharing that name. Omit group → section **Core**. Groups are ordered **alphabetically** (A–Z).
+    # buyrates_fees overrides buyrates_fee_usd if both are set. Output column: buyrate (after currency).
+    buyrates_fees:
+      "3D Secure - Stripe per lookup fee":
+        usd: 0.012
+        #gbp: 0.009
+        note: "✓ v3"
+      "ACH Debit - transaction fee":
+        usd: 0.15
+      "ACH Debit - validation fee":
+        usd: null
+        #note: "https://docs.stripe.com/payments/automatic-bank-account-validation"
+        highlight: true
+      "Authorization Optimization - real time retries":
+        display: false
+      "BACS Debit - transaction fee":
+        usd: null
+        gbp: 0.15
+        note: "ok"
+      "Billing - usage fee":
+        group: "Invoicing"
+        usd: null
+      "Capital - revenue sharing - platform C4P":
+        display: false
+      "Card Account - updates":
+        usd: 0.050
+        note: "✓ v3"
+      "Card Net Revshare":
+        display: false
+        usd: null
+      "Card Payments - revenue share":
+        display: false
+        usd: null
+      "Card payments - Stripe fee":
+        usd: null
+        note: "bad"
+        highlight: true
+      "Card payments - Stripe per authorization fee":
+        usd: 0.02
+      "Card payments - Stripe per dispute fee":
+        usd: 8.00
+        note: "good"
+      "Card payments - Stripe volume fee":
+        usd: null
+        display: false
+      "Card payments - non-transactional network costs":
+        usd: null
+        display: false
+      "Card payments - transactional network costs":
+        usd: null
+        display: false
+      "Connect - Stripe managed risk":
+        usd: null
+        display: false
+      "Connect - account volume billing":
+        usd: null
+        display: false
+      "Connect - application fee":
+        usd: 0.0
+        note: "TeamUp EUR was being billed by daysmart"
+        highlight: true
+      "Connect - active account billing": 
+        usd: 1.00
+        note: "✓ v3"
+      "Connect - cross border transfers":
+        usd: null
+        display: false
+      "Connect - Instant payout fee":
+        usd: null
+        display: false
+      "Connect - payout fee":
+        usd: 0.05
+        note: "✓ v3"
+      "Connect - platform debit fee":
+        usd: null
+      "Custom domain - product usage fees":
+        usd: null
+        display: false
+      "Dispute Auto Representment Fee":
+        usd: null
+      "Dispute Evidence Submission Fee":
+        usd: null
+      "Financial Connections - bank account verification":
+        usd: 0.75
+      "Identity - document check fee":
+        usd: null
+      "Invoicing - Plus":
+        group: "Invoicing"
+        usd: null
+      "Invoicing - Starter":
+        group: "Invoicing"
+        usd: null
+      "Link - transaction fee":
+        usd: 0.00
+      "Network Token - tokenization fee":
+        usd: 0.07
+        note: "✓ v3"
+      "Radar - usage fee":
+        group: "Risk"
+        usd: 0.012
+        note: "✓ v3"
+      "Radar for Fraud Teams - transaction fee":
+        group: "Risk"
+        usd: 0.012
+        note: "✓ v3"
+      "Radar For Platforms Account Features":
+        group: "Risk"
+        usd: 0.012
+        note: "✓ v3"
+      "Revenue Recognition - Subscription":
+        group: "Invoicing"
+        usd: null
+      "Revenue Recognition - usage fee":
+        group: "Invoicing"
+        usd: null
+      "Sigma - monthly fee":
+        group: "Other"
+        usd: 0
+      "Sigma - transaction fee":
+        group: "Other"
+        usd: 0
+        gbp: 0
+      "Stripe Data Pipeline - transaction fee":
+        group: "Other"
+        usd: 0.003
+        note: "✓ v3"
+      "Stripe Tax - integration fee":
+        group: "Invoicing"  
+        highlight: true
+        note: "Sawyer using tax product at 50bps sticker rate"
+        discount: 0.005
+        usd: null
+      "Sunbit - transaction fee":
+        usd: 0.30
+      "Terminal - Tap to Pay daily active device fee":        
+        usd: 0.40
+        gbp: 0.35
+        note: "ok"
+      "Terminal - Tap to Pay per auth fee":
+        usd: 0.015
+        note: "? andoird or iphone"
+      "Terminal - services fee":
+        usd: 0.025
+        note: "good"
+      "Terminal Hardware Fees":
+        usd: null
+      "US tax reporting for Connect platforms  - e-file-1099":
+        group: "Other"
+        usd: 1.49
+      "US tax reporting for Connect platforms  - mail-1099":
+        group: "Other"
+        usd: 1.99
+      "US tax reporting for Connect platforms  - state-file-1099":
+        group: "Other"
+        usd: 1.490
   # Add more commands here as needed
   # "account.list":
   #   key: "restricted"

@@ -1,3 +1,5 @@
 # Stripe CLI – Cursor rules
 
 When you add, change, or remove CLI commands or options (in bin/stripe-cli or lib/commands/), update README.md in the same change so usage, options, and examples stay accurate. Do this without being asked.
+
+When you add or change material product requirements, update AGENTS.md in the same change so setup, configuration, usage, and conventions stay documented.
