@@ -41,31 +41,19 @@ platform:
 
 commands:
   "account.setting.network-cost.enable":
-    key: "secret"
     test_env: prod
   "account.setting.network-cost.disable":
-    key: "secret"
     test_env: prod
   "account.setting.network-cost.status":
-    key: "secret"
     test_env: prod
   "account.setting.network-cost.delete-scheme":
-    key: "secret"
     test_env: prod
   "account.search":
-    key: "restricted"
   "test.account.generate":
-    key: "secret"
   "account.capabilities.request":
-    key: "restricted"
   "account.capabilities.list":
-    key: "restricted"
   "account.customer.delete":
-    key: "restricted"
   "account.link":
-    key: "secret"
-  "checkout.session.setup":
-    key: "secret"
   "pipeline":
     host: "vpn-warehouse.data.dssvc.io"
     port: 5439

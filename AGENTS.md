@@ -61,7 +61,7 @@ stripe-cli/
 
 `bin/stripe-cli` is a thin Commander dispatcher; each subcommand handler lives in `lib/commands/*.js`. Two cross-cutting concerns to know:
 
-1. **Key resolution (`lib/stripe-client.js#getStripeKey`)** — Priority: `--key` > `--platform` (from `.secrets`) > default profile (from `config.yml#global.default_platform`) > `STRIPE_SECRET_KEY` env. The required key type (`secret` vs `restricted`) is looked up per command path via `config-loader.js#getRequiredKeyType`. Platforms ending `-uat`/`-test` flip the resolver to test mode and fall back to the base platform's test keys if the UAT profile is missing one.
+1. **Key resolution (`lib/stripe-client.js#getStripeKey`)** — Priority: `--key` > `--platform` (from `.secrets`) > default profile (from `config.yml#global.default_platform`) > `STRIPE_SECRET_KEY` env. The required key type (`secret` vs `restricted`) is looked up per command path via `config-loader.js#getRequiredKeyType`; **default is `restricted`** for any command not explicitly listed in `config.yml`'s `commands` section. When the required type is `restricted` and the resolved profile has no `restricted_key`, `getProfileKeyByType` falls back to `secret_key` from the same profile (one-way: secret-required commands never fall back to restricted). Explicit `--key` is still strictly validated by `validateKeyForCommand`. Platforms ending `-uat`/`-test` flip the resolver to test mode and fall back to the base platform's test keys if the UAT profile is missing one.
 2. **Two configuration files**:
    - `.secrets` (ini, `chmod 600`-enforced by `profile-manager.js`) — API keys per profile.
    - `config.yml` — platform → account/connected_account map; per-command required key types; `commands.pipeline` host/schema/buyrates settings.
@@ -114,6 +114,7 @@ Smoke checks that don't require keys:
   2. `--platform` option
   3. Default platform from `config.yml` file
   4. `STRIPE_SECRET_KEY` environment variable (lowest priority)
+- **Commands default to restricted (`rk_*`)** unless `config.yml`'s `commands.<name>.key` overrides to `"secret"`. If a profile has no `restricted_key`, the CLI uses `secret_key` from the same profile as a fallback (restricted→secret only; not the reverse).
 - Profile management via `.secrets` configuration file
 - Validation ensures keys start with `sk_` or `rk_`
 - Clear error messages for authentication issues

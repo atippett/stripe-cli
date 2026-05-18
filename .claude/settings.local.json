@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node *)",
+      "Bash(awk -F, 'NR>1 {c[$\\(NF-1\\)]++} END {for \\(s in c\\) print s\": \"c[s]}' tmp/barksuds_patched.csv)",
+      "Bash(awk -F, 'NR==1 || $25 ~ /^unmatched/ {print}' tmp/barksuds_patched.csv)",
+      "Bash(awk -F, 'NR==1 {print \"profileid,token_last4,expiry,stripe_customer_id,stripe_status,stripe_error\"; next} {t=$5; tl4=substr\\(t,length\\(t\\)-3\\); print $2\",\"tl4\",\"$7\",\"$19\",\"$25\",\"$26}')",
+      "Bash(awk -F, 'NR>1 {c[$1]++} END {for \\(s in c\\) print s\": \"c[s]}' tmp/barksuds_map.csv)",
+      "Bash(python3 -c \"import openpyxl; print\\('openpyxl: yes'\\)\")",
+      "Bash(python3 -c \"import pandas; print\\('pandas: yes'\\)\")",
+      "Bash(git stash *)",
+      "Bash(npm run *)",
+      "Bash(npx jest *)"
+    ]
+  }
+}

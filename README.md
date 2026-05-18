@@ -99,6 +99,8 @@ Use the `-p` and `-k` flags (global; can appear before or after the command):
 
 **Priority**: `--key` > `--platform` (from `.secrets`) > default platform from `config.yml` > `STRIPE_SECRET_KEY`.
 
+**Key type**: Commands default to the **restricted key** (`rk_*`). Per-command overrides live in `config.yml` under `commands.<name>.key: "secret"` for the handful of operations that must use a secret key. When the resolved type is restricted and the profile has no `restricted_key`, the CLI falls back to `secret_key` from the same profile (one-way fallback — secret-required commands never fall back to a restricted key). Explicit `--key sk_…`/`--key rk_…` is still strictly validated against the command's required type.
+
 ## Usage
 
 ### List and search Connect accounts
