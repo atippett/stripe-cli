@@ -1,5 +1,6 @@
 const {
   buildMap,
+  formatResultsReport,
   resolveColumns,
   normKey,
   normalizeLast4,
@@ -167,5 +168,44 @@ describe('buildMap validation', () => {
     const { warnings, summary } = buildMap(ccRows, stripeNoJoin, '');
     expect(warnings.length).toBeGreaterThan(0);
     expect(summary.matched).toBe(0);
+  });
+});
+
+describe('formatResultsReport', () => {
+  const ccRows = [
+    { 'Last 4': '4242', 'Token': '9999990000004242', 'Expiry Month': '12', 'Expiry Year': '2027', 'Profile ID': 'cust_123', 'Acct ID': '100' },
+    { 'Last 4': '1111', 'Token': '9999990000001111', 'Expiry Month': '01', 'Expiry Year': '2026', 'Profile ID': 'cust_999', 'Acct ID': '101' }
+  ];
+  const stripeRows = [
+    stripeRow(),
+    stripeRow({ old_id: 'cust_777', created_customer: 'cus_XYZ', source_new_id: 'pm_XYZ', card_last4: '5555', card_exp_month: '03', card_exp_year: '2028' })
+  ];
+
+  test('reports summary, reconciliation, and the specific unmatched accounts', () => {
+    const build = buildMap(ccRows, stripeRows, 'acct_TEST');
+    const report = formatResultsReport(build, { connectedAccount: 'acct_TEST', ccFile: 'cc.csv', stripeFile: 'stripe.csv' });
+
+    expect(report).toContain('Connected account: acct_TEST');
+    expect(report).toContain('Matched:          1');
+    expect(report).toContain('CardConnect 2 = 1 matched + 1 cardconnect_only');
+
+    // CardConnect-only entry (cust_999) is listed; matched one (cust_123) is not.
+    expect(report).toContain('CardConnect-only (no Stripe match) — 1');
+    expect(report).toContain('profileid=cust_999');
+    expect(report).not.toContain('profileid=cust_123');
+
+    // Stripe-only entry (cust_777) is listed with its Stripe identifiers.
+    expect(report).toContain('Stripe-only (no CardConnect match) — 1');
+    expect(report).toContain('old_id=cust_777');
+    expect(report).toContain('customer=cus_XYZ');
+    expect(report).toContain('payment_method=pm_XYZ');
+  });
+
+  test('shows "(none)" sections when everything matches', () => {
+    const build = buildMap([ccRows[0]], [stripeRow()], '');
+    const report = formatResultsReport(build, {});
+    expect(report).toContain('CardConnect-only (no Stripe match) — 0');
+    expect(report).toContain('Stripe-only (no CardConnect match) — 0');
+    expect(report).toContain('(none)');
   });
 });

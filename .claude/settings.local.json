@@ -17,7 +17,9 @@
       "Read(//tmp/**)",
       "Bash(node /Users/atippett/dev/stripe-cli/bin/stripe-cli migrate.card.map --cardconnect oviedo_customers.csv --stripe import_acct_1TXT592Wx8y0DjUj_card_pms_migreq_1TYWH02Wx8y0DjUj1q551dm2_1e192898-3f55-4931-ab55-12b4f98106e5_1779921660.csv)",
       "Bash(echo \"exit: $?\")",
-      "Bash(bash ~/.claude/skills/card-token-map/map-company-tokens.sh westchase)"
+      "Bash(bash ~/.claude/skills/card-token-map/map-company-tokens.sh westchase)",
+      "Bash(chmod +x ~/.claude/skills/card-token-map/map-company-tokens.sh)",
+      "Bash(NODE_PATH=/Users/atippett/dev/stripe-cli/node_modules node -e \"require\\('module'\\).Module._initPaths\\(\\); require\\('/tmp/analyze_tampa.js'\\)\")"
     ]
   }
 }

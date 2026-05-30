@@ -148,6 +148,7 @@ program
   .requiredOption('--cardconnect <file>', 'CardConnect export CSV')
   .requiredOption('--stripe <file>', 'Stripe migration result CSV')
   .option('--format <format>', 'Output format (csv, json)', 'csv')
+  .option('--results <file>', 'Also write a human-readable results report (summary + unmatched lists) to this file')
   .action(async (options) => {
     try {
       await mapCardConnect(mergeOptions(options));
