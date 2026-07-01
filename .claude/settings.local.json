@@ -19,7 +19,8 @@
       "Bash(echo \"exit: $?\")",
       "Bash(bash ~/.claude/skills/card-token-map/map-company-tokens.sh westchase)",
       "Bash(chmod +x ~/.claude/skills/card-token-map/map-company-tokens.sh)",
-      "Bash(NODE_PATH=/Users/atippett/dev/stripe-cli/node_modules node -e \"require\\('module'\\).Module._initPaths\\(\\); require\\('/tmp/analyze_tampa.js'\\)\")"
+      "Bash(NODE_PATH=/Users/atippett/dev/stripe-cli/node_modules node -e \"require\\('module'\\).Module._initPaths\\(\\); require\\('/tmp/analyze_tampa.js'\\)\")",
+      "Bash(awk '/buyrates_fees:/{f=1} f{print NR\": \"$0} /^[a-zA-Z]/{if\\(f && $0 !~ /buyrates_fees/\\) c++; if\\(c>0 && f && $0 ~ /^[a-zA-Z]/ && $0 !~ /buyrates/\\){exit}}' config.yml)"
     ]
   }
 }
