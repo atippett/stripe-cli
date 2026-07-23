@@ -48,6 +48,12 @@ commands:
     test_env: prod
   "account.setting.network-cost.delete-scheme":
     test_env: prod
+  "account.setting.payouts.set":
+    test_env: prod
+  "account.setting.payouts":
+    test_env: prod
+  "account.settings":
+    test_env: prod
   "account.search":
   "test.account.generate":
   "account.capabilities.request":
@@ -80,9 +86,9 @@ commands:
       "ACH Debit - transaction fee":
         usd: 0.15
       "ACH Debit - validation fee":
-        usd: null
+        usd: 0.75
         #note: "https://docs.stripe.com/payments/automatic-bank-account-validation"
-        highlight: true
+        note: "✓ 5th amendment"
       "Authorization Optimization - real time retries":
         display: false
       "BACS Debit - transaction fee":
@@ -96,6 +102,7 @@ commands:
         display: false
       "Card Account - updates":
         usd: 0.050
+        gbp: 0.038
         note: "✓ v3"
       "Card Net Revshare":
         display: false
@@ -131,9 +138,16 @@ commands:
         usd: 0.0
         note: "TeamUp EUR was being billed by daysmart"
         highlight: true
-      "Connect - active account billing": 
+      "Connect - active account billing":
         usd: 1.00
-        note: "✓ v3"
+        gbp: 0.77
+        aud: 1.450
+        cad: 1.400
+        eur: 0.900
+        hkd: 7.850
+        myr: 4.000
+        nzd: 1.740
+        note: "✓ v3"   # amendment lists no SGD active-account fee
       "Connect - cross border transfers":
         usd: null
         display: false
@@ -142,6 +156,14 @@ commands:
         display: false
       "Connect - payout fee":
         usd: 0.05
+        gbp: 0.04
+        aud: 0.072
+        cad: 0.070
+        eur: 0.043
+        hkd: 0.400
+        myr: 0.200
+        nzd: 0.090
+        sgd: 0.070
         note: "✓ v3"
       "Connect - platform debit fee":
         usd: null
@@ -166,6 +188,7 @@ commands:
         usd: 0.00
       "Network Token - tokenization fee":
         usd: 0.07
+        gbp: 0.05
         note: "✓ v3"
       "Radar - usage fee":
         group: "Risk"
@@ -188,6 +211,7 @@ commands:
       "Sigma - monthly fee":
         group: "Other"
         usd: 0
+        gbp: 0
       "Sigma - transaction fee":
         group: "Other"
         usd: 0
