@@ -48,6 +48,12 @@ commands:
     test_env: prod
   "account.setting.network-cost.delete-scheme":
     test_env: prod
+  "account.setting.payouts.set":
+    test_env: prod
+  "account.setting.payouts":
+    test_env: prod
+  "account.settings":
+    test_env: prod
   "account.search":
   "test.account.generate":
   "account.capabilities.request":

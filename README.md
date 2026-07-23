@@ -113,6 +113,20 @@ Use the `-p` and `-k` flags (global; can appear before or after the command):
 ./bin/stripe-cli account.search "*vet*" -p vet
 ```
 
+### Account settings (view all settings)
+
+Show all settings for a connected account: the Account `settings` hash (branding,
+card_payments, dashboard, payments, payouts, etc.) plus Balance Settings
+(customized start of day). Account comes from `-a` or the profile's `account`.
+
+```bash
+./bin/stripe-cli account.settings -p dash -a acct_xxx
+./bin/stripe-cli account.settings -p dash -a acct_xxx -f json
+```
+
+Read-only. If the account/key doesn't support Balance Settings, the account
+settings are still shown and the balance section notes it's unavailable.
+
 ### Account link (Connect onboarding)
 
 Create a [Stripe account link](https://docs.stripe.com/api/account_links/create) for Connect onboarding. Single-use URL; the account can be given with `-a` or taken from the profile’s `account` in config.yml when using `-p` (or the default platform).
@@ -258,6 +272,50 @@ Options:
 ```
 
 Each delete/disable action prompts (y/n) before running.
+
+### Account settings (payout settings)
+
+View and update a connected account's payout settings — payout schedule,
+statement descriptor, minimum balance, settlement delay, and the customized
+start of day (Stripe [Balance Settings](https://docs.stripe.com/api/balance-settings):
+`payouts` + `settlement_timing`). Customized start of day is available for
+connected accounts in supported countries (AU, HK, ID, IN, JP, MY, NZ, SG, TH; US
+in private preview) — see [Customized start of day](https://docs.stripe.com/connect/customized-start-of-day).
+
+```bash
+# View current payout settings (payouts + settlement_timing)
+./bin/stripe-cli account.setting.payouts -p dash -a acct_xxx
+
+# Update specific fields (any subset)
+./bin/stripe-cli account.setting.payouts.set -p dash -a acct_xxx --hour 9 --minutes 30 --timezone US/Eastern
+./bin/stripe-cli account.setting.payouts.set -p dash -a acct_xxx --interval weekly --weekly-payout-days monday,friday
+./bin/stripe-cli account.setting.payouts.set -p dash -a acct_xxx --interval monthly --monthly-payout-days 5,20
+./bin/stripe-cli account.setting.payouts.set -p dash -a acct_xxx --delay-days 3 --statement-descriptor "PAYOUT"
+./bin/stripe-cli account.setting.payouts.set -p dash -a acct_xxx --minimum-balance usd=1000
+
+# Interactive: run with no field flags to be prompted for each value
+./bin/stripe-cli account.setting.payouts.set -p dash -a acct_xxx
+```
+
+Options for `set` (only provided fields are changed):
+
+- `--interval` — `daily | weekly | monthly | manual`
+- `--weekly-payout-days` — comma list `monday..friday` (required when interval is weekly)
+- `--monthly-payout-days` — comma list `1-31` (required when interval is monthly)
+- `--statement-descriptor` — payout statement descriptor
+- `--minimum-balance <currency>=<amount>` — smallest currency unit; repeatable
+- `--delay-days` — settlement delay override `0-31`, or `reset` to clear
+- `--hour` / `--minutes` (`0` or `30`) / `--timezone` — customized start of day
+- `--debit-negative-balances` — `true | false`
+
+When run with no field flags in an interactive terminal, `set` shows the current
+values and prompts for each field (Enter keeps the current value), then confirms
+before applying. The timezone prompt is a live picker of supported start-of-day
+timezones — **type to filter, ↑/↓ to move, Tab to complete, Enter to select**
+(falls back to Tab-completion in terminals without raw-mode support). Start-of-day
+changes take effect at the specified time, not immediately, and don't affect
+existing balances. Both commands accept `-f json`. `payouts.status` is read-only
+and can't be set.
 
 ### Platform and config
 

@@ -2,13 +2,14 @@
 
 const { Command } = require('commander');
 const chalk = require('chalk');
-const { listAccounts, searchAccounts, createAccountLink } = require('../lib/commands/account');
+const { listAccounts, searchAccounts, createAccountLink, getAccountSettings } = require('../lib/commands/account');
 const { 
   enableNetworkCostPassthrough, 
   disableNetworkCostPassthrough, 
   getNetworkCostPassthroughStatus,
   deleteNetworkCostPassthroughScheme 
 } = require('../lib/commands/account-settings');
+const { setPayoutSettings, getPayoutSettings } = require('../lib/commands/balance-settings');
 const { importCards } = require('../lib/commands/cards');
 const { mapCardConnect } = require('../lib/commands/migrate-cards');
 const { deleteCustomer, deleteAllCustomers, deleteCustomersByMetadata } = require('../lib/commands/customer');
@@ -248,6 +249,67 @@ program
   .action(async (options) => {
     try {
       await deleteNetworkCostPassthroughScheme(mergeOptions(options));
+    } catch (error) {
+      console.error(chalk.red('Error:'), error.message);
+      process.exit(1);
+    }
+  });
+
+// Account settings status command (all settings for a connected account)
+program
+  .command('account.settings')
+  .description('Show all settings for a connected account (Account settings hash + Balance Settings / start of day)')
+  .option('-a, --account <account>', 'Connected account ID (optional if profile has account in config.yml)')
+  .option('-k, --key <key>', 'Stripe secret key (or set STRIPE_SECRET_KEY env var)')
+  .option('-p, --platform <platform>', 'Use platform from .secrets config file')
+  .option('-f, --format <format>', 'Output format (table, json)', 'table')
+  .action(async (options) => {
+    try {
+      await getAccountSettings(mergeOptions(options));
+    } catch (error) {
+      console.error(chalk.red('Error:'), error.message);
+      process.exit(1);
+    }
+  });
+
+// Payout settings set command (Balance Settings: payouts + settlement_timing)
+program
+  .command('account.setting.payouts.set')
+  .description('Update payout settings for a connected account (Balance Settings: payouts + settlement_timing). With no flags, prompts interactively for each field.')
+  .option('-a, --account <account>', 'Connected account ID (required)')
+  .option('--interval <interval>', 'Payout schedule interval: daily | weekly | monthly | manual')
+  .option('--weekly-payout-days <days>', 'Weekly payout days (comma-separated: monday..friday). Required when interval=weekly')
+  .option('--monthly-payout-days <days>', 'Monthly payout days (comma-separated: 1-31). Required when interval=monthly')
+  .option('--statement-descriptor <text>', 'Payout statement descriptor')
+  .option('--minimum-balance <pair...>', 'Minimum balance as <currency>=<amount> in smallest unit (repeatable, e.g. --minimum-balance usd=1000)')
+  .option('--delay-days <days>', 'Settlement delay days override (0-31), or "reset" to clear')
+  .option('--hour <hour>', 'Start-of-day hour (within the account country\'s allowed range)')
+  .option('--minutes <minutes>', 'Start-of-day minutes (0 or 30)')
+  .option('--timezone <timezone>', 'Start-of-day IANA timezone (e.g. US/Eastern, Asia/Singapore)')
+  .option('--debit-negative-balances <bool>', 'Whether to debit negative balances (true|false)')
+  .option('-k, --key <key>', 'Stripe secret key (or set STRIPE_SECRET_KEY env var)')
+  .option('-p, --platform <platform>', 'Use platform from .secrets config file')
+  .option('-f, --format <format>', 'Output format (table, json)', 'table')
+  .action(async (options) => {
+    try {
+      await setPayoutSettings(mergeOptions(options));
+    } catch (error) {
+      console.error(chalk.red('Error:'), error.message);
+      process.exit(1);
+    }
+  });
+
+// Payout settings status command
+program
+  .command('account.setting.payouts')
+  .description('Show the current payout settings (Balance Settings: payouts + settlement_timing) for a connected account')
+  .option('-a, --account <account>', 'Connected account ID (required)')
+  .option('-k, --key <key>', 'Stripe secret key (or set STRIPE_SECRET_KEY env var)')
+  .option('-p, --platform <platform>', 'Use platform from .secrets config file')
+  .option('-f, --format <format>', 'Output format (table, json)', 'table')
+  .action(async (options) => {
+    try {
+      await getPayoutSettings(mergeOptions(options));
     } catch (error) {
       console.error(chalk.red('Error:'), error.message);
       process.exit(1);

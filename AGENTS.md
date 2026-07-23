@@ -28,6 +28,25 @@ This is a Node.js CLI tool built with Commander.js that provides a command-line 
 - Comprehensive error handling with user-friendly messages
 - Use async/await for asynchronous operations
 
+## Output Conventions
+
+**Command results must be terminal-text based** — plain, greppable, `key: value`
+lines rather than boxes, emoji, or prose sentences. This keeps output readable in
+a terminal and easy to pipe/grep.
+
+- Print structured data as an indented `key: value` tree. Use the shared
+  `lib/output.js#printSettingsTree` helper (used by `account.settings` and
+  `account.setting.payouts`) — nested objects become bold section
+  headers, leaves print inline. Do not hand-roll bespoke label formats
+  (e.g. `Time: 09:30`); print the underlying field names (`hour: 9`).
+- Keep the primary result on **stdout**. Send progress/status chatter
+  (e.g. "Updating payout settings for account: …") to **stderr** via
+  `console.error`, so stdout stays clean for piping.
+- Prefer no decorative headers/emoji. A short lowercase section label
+  (`account_settings:`, `start_of_day:`) is fine.
+- Always support `-f json` for machine-readable output; JSON mode prints only the
+  raw object to stdout (no status lines).
+
 ## Project Structure
 
 ```
@@ -36,8 +55,9 @@ stripe-cli/
 │   └── stripe-cli              # CLI entry point: registers all commands via Commander
 ├── lib/
 │   ├── commands/
-│   │   ├── account.js          # account.list, account.search, account.link
+│   │   ├── account.js          # account.list, account.search, account.link, account.settings
 │   │   ├── account-settings.js # account.setting.network-cost.* (passthrough)
+│   │   ├── balance-settings.js # account.setting.payouts.* (payouts + settlement_timing; interactive prompt); makeStripeRequest reused by account.settings
 │   │   ├── capabilities.js     # account.capabilities.*
 │   │   ├── cards.js            # account.import.card (CSV → SetupIntents)
 │   │   ├── checkout.js         # checkout.session.setup
@@ -47,6 +67,7 @@ stripe-cli/
 │   │   ├── pipeline.js         # pipeline.query, pipeline.report (Redshift via pg)
 │   │   └── test-account.js     # test.account.generate (uses kyc.yml)
 │   ├── config-loader.js        # Loads config.yml; resolves required key type per command
+│   ├── output.js               # Shared terminal output helpers (printSettingsTree)
 │   ├── profile-manager.js      # Parses .secrets ini-style profiles
 │   └── stripe-client.js        # Builds Stripe client; getStripeKey() resolves --key/-p/env
 ├── reports/                    # Canned pipeline SQL (*.sql) — supports {{placeholders}}
@@ -181,6 +202,9 @@ Each platform entry can have a single `connected_account`. Platform names ending
 - `stripe-cli account.setting.network-cost.disable -a acct_123` - Disable network cost passthrough
 - `stripe-cli account.setting.network-cost.status -a acct_123` - Check network cost passthrough status
 - `stripe-cli account.setting.network-cost.delete-scheme -a acct_123 --scheme-id pcsch_123` - Delete scheduled scheme
+- `stripe-cli account.setting.payouts -a acct_123` - Show payout settings (Balance Settings: payouts + settlement_timing)
+- `stripe-cli account.setting.payouts.set -a acct_123 --interval weekly --weekly-payout-days monday,friday` - Update payout settings (schedule, statement descriptor, minimum balance, delay, start of day). Run with no field flags in a terminal to be prompted interactively.
+- `stripe-cli account.settings -a acct_123` - Show all settings for a connected account (Account `settings` hash + Balance Settings / start of day)
 
 ### Card Import Commands
 
