@@ -317,6 +317,31 @@ changes take effect at the specified time, not immediately, and don't affect
 existing balances. Both commands accept `-f json`. `payouts.status` is read-only
 and can't be set.
 
+### Account capabilities
+
+List, request (add), and remove (un-request) [capabilities](https://docs.stripe.com/api/capabilities)
+on a connected account.
+
+```bash
+# List every capability with its status and outstanding requirements
+./bin/stripe-cli account.capabilities.list -p ttp -a acct_xxx
+
+# Request (add) a capability
+./bin/stripe-cli account.capabilities.request -p ttp -a acct_xxx -c afterpay_clearpay
+
+# Remove (un-request) a capability
+./bin/stripe-cli account.capabilities.remove -p ttp -a acct_xxx -c afterpay_clearpay
+```
+
+`remove` prompts (y/n) before running; pass `-y` to skip the prompt. Stripe has no
+delete endpoint for capabilities — `remove` sets `requested=false`, which leaves the
+capability on the account as `inactive`. All three accept `-f json`.
+
+`list` prints requirements only for capabilities that were actually requested.
+Stripe reports the account's whole outstanding KYC set against every capability,
+including ones nobody asked for, so showing them all buries the signal. Use
+`-f json` when you need the raw requirements for everything.
+
 ### Platform and config
 
 ```bash

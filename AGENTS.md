@@ -206,6 +206,18 @@ Each platform entry can have a single `connected_account`. Platform names ending
 - `stripe-cli account.setting.payouts.set -a acct_123 --interval weekly --weekly-payout-days monday,friday` - Update payout settings (schedule, statement descriptor, minimum balance, delay, start of day). Run with no field flags in a terminal to be prompted interactively.
 - `stripe-cli account.settings -a acct_123` - Show all settings for a connected account (Account `settings` hash + Balance Settings / start of day)
 
+### Account Capabilities Commands
+
+- `stripe-cli account.capabilities.list -a acct_123` - List all capabilities with status and outstanding requirements
+- `stripe-cli account.capabilities.request -a acct_123 -c afterpay_clearpay` - Request (add) a capability
+- `stripe-cli account.capabilities.remove -a acct_123 -c afterpay_clearpay` - Remove (un-request) a capability; prompts (y/n) unless `-y`
+
+Stripe has no delete endpoint for capabilities: `remove` sets `requested=false`, so the
+capability stays on the account as `inactive`. `list` table output prints `requirements`
+only for capabilities with `requested: true` — Stripe reports the account's full
+outstanding KYC set against every capability, so printing them all (~45 capabilities × 3
+arrays) is unreadable; `-f json` is unfiltered.
+
 ### Card Import Commands
 
 - `stripe-cli account.import.card -f cards.csv -a acct_123` - Import card data from CSV to connected account

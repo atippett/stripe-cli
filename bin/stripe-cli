@@ -10,6 +10,11 @@ const {
   deleteNetworkCostPassthroughScheme 
 } = require('../lib/commands/account-settings');
 const { setPayoutSettings, getPayoutSettings } = require('../lib/commands/balance-settings');
+const {
+  listCapabilities,
+  requestCapability,
+  removeCapability
+} = require('../lib/commands/capabilities');
 const { importCards } = require('../lib/commands/cards');
 const { mapCardConnect } = require('../lib/commands/migrate-cards');
 const { deleteCustomer, deleteAllCustomers, deleteCustomersByMetadata } = require('../lib/commands/customer');
@@ -310,6 +315,60 @@ program
   .action(async (options) => {
     try {
       await getPayoutSettings(mergeOptions(options));
+    } catch (error) {
+      console.error(chalk.red('Error:'), error.message);
+      process.exit(1);
+    }
+  });
+
+// Capabilities list command
+program
+  .command('account.capabilities.list')
+  .description('List all capabilities for a connected account')
+  .option('-a, --account <account>', 'Connected account ID (required)')
+  .option('-k, --key <key>', 'Stripe secret key (or set STRIPE_SECRET_KEY env var)')
+  .option('-p, --platform <platform>', 'Use platform from .secrets config file')
+  .option('-f, --format <format>', 'Output format (table, json)', 'table')
+  .action(async (options) => {
+    try {
+      await listCapabilities(mergeOptions(options));
+    } catch (error) {
+      console.error(chalk.red('Error:'), error.message);
+      process.exit(1);
+    }
+  });
+
+// Capabilities request command
+program
+  .command('account.capabilities.request')
+  .description('Request (add) a capability for a connected account')
+  .option('-a, --account <account>', 'Connected account ID (required)')
+  .option('-c, --capability <capability>', 'Capability ID, e.g. card_payments (required)')
+  .option('-k, --key <key>', 'Stripe secret key (or set STRIPE_SECRET_KEY env var)')
+  .option('-p, --platform <platform>', 'Use platform from .secrets config file')
+  .option('-f, --format <format>', 'Output format (table, json)', 'table')
+  .action(async (options) => {
+    try {
+      await requestCapability(mergeOptions(options));
+    } catch (error) {
+      console.error(chalk.red('Error:'), error.message);
+      process.exit(1);
+    }
+  });
+
+// Capabilities remove command
+program
+  .command('account.capabilities.remove')
+  .description('Remove (un-request) a capability for a connected account')
+  .option('-a, --account <account>', 'Connected account ID (required)')
+  .option('-c, --capability <capability>', 'Capability ID, e.g. afterpay_clearpay (required)')
+  .option('-k, --key <key>', 'Stripe secret key (or set STRIPE_SECRET_KEY env var)')
+  .option('-p, --platform <platform>', 'Use platform from .secrets config file')
+  .option('-f, --format <format>', 'Output format (table, json)', 'table')
+  .option('-y, --yes', 'Skip the confirmation prompt')
+  .action(async (options) => {
+    try {
+      await removeCapability(mergeOptions(options));
     } catch (error) {
       console.error(chalk.red('Error:'), error.message);
       process.exit(1);

@@ -58,6 +58,7 @@ commands:
   "test.account.generate":
   "account.capabilities.request":
   "account.capabilities.list":
+  "account.capabilities.remove":
   "account.customer.delete":
   "account.link":
   "pipeline":
